@@ -64,6 +64,7 @@ const initWebsocket = () => {
       console.log('joined');
     })
     .joining((user: LoggedInUser) => {
+      console.log('new user joining', user);
       if (user.ulid === room.value?.createdByUser.ulid) {
         return;
       }
@@ -71,7 +72,7 @@ const initWebsocket = () => {
       currentRoom.setSecondUser(user);
     })
     .leaving((user: LoggedInUser) => {
-      console.log(user);
+      console.log('user leave channel', user);
 
       if (user.ulid === room.value?.secondUser?.ulid) {
         return currentRoom.setSecondUser(null);
@@ -120,7 +121,7 @@ const leaveRoom = async () => {
     return showUnexpectedError();
   }
 
-  echo.value.leaveChannel(channelId.value);
+  echo.value.leave(channelId.value);
 
   showInfoAlert('Đã rời khỏi phòng thành công', 'Rời khỏi phòng');
 
