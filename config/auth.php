@@ -40,6 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'api' => [
+            'driver' => 'jwt',
+            'provider' => 'users',
+        ],
     ],
 
     /*
@@ -112,4 +117,14 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    /*
+    |--------------------------------------------------------------------------
+    | JWT Authentication Timeout
+    |--------------------------------------------------------------------------
+    |
+    | After logged in, a token will be added into HTTP-only Cookie
+    | Specify the TTL here, by default it will be 7-day expiration
+    |
+    */
+    'jwt_authentication_timeout' => env('JWT_AUTHENTICATION_TIMEOUT', 60 * 60 * 7),
 ];

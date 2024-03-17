@@ -38,7 +38,24 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/game',
     component: () => import('@/screens/Game/GameLayout.vue'),
-    children: [],
+    children: [
+      {
+        path: '/',
+        name: 'rooms',
+        component: () => import('@/screens/Game/Rooms/RoomsScreen.vue'),
+        meta: {
+          title: 'Các phòng game',
+        },
+      },
+      {
+        path: 'login-with-google',
+        name: 'login-with-google',
+        component: () => import('@/screens/Game/Room/RoomScreen.vue'),
+        meta: {
+          title: 'Phòng game',
+        },
+      },
+    ],
   },
   {
     path: '/:catchAll(.*)*',
