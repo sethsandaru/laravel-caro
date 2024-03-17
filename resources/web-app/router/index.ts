@@ -45,14 +45,16 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/screens/Game/Rooms/RoomsScreen.vue'),
         meta: {
           title: 'Các phòng game',
+          requiresAuth: true,
         },
       },
       {
-        path: 'login-with-google',
-        name: 'login-with-google',
+        path: '/room/:id',
+        name: 'room',
         component: () => import('@/screens/Game/Room/RoomScreen.vue'),
         meta: {
           title: 'Phòng game',
+          requiresAuth: true,
         },
       },
     ],

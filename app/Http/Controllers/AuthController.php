@@ -48,6 +48,6 @@ class AuthController extends Controller
             ->json([
                 'outcome' => 'SUCCESS',
             ])
-            ->cookie('token', $token, 60 * 60 * 7);
+            ->cookie('token', $token, 60 * 24 * 7);
     }
 }

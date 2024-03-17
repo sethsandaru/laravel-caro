@@ -1,6 +1,6 @@
 <template>
   <a
-    href="#"
+    :href="loginUrl"
     class="flex w-full items-center justify-center gap-5 rounded-md bg-white px-3 py-4 text-lg font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent"
   >
     <svg
@@ -28,3 +28,10 @@
     <span class="text-lg font-semibold leading-6">Đăng nhập bằng Google</span>
   </a>
 </template>
+
+<script setup>
+import { computed } from 'vue';
+import { getGoogleOauthUrl } from '@/screens/Auth/Login/LoginScreen.methods';
+
+const loginUrl = computed(getGoogleOauthUrl);
+</script>

@@ -1,4 +1,6 @@
 import { Router } from 'vue-router';
+import { getLoggedInUserApi } from '@/datasources/api/auth/getLoggedInUser.api';
+import { useUserStore } from '@/stores/user.store';
 
 const baseTitle = 'Laravel Caro';
 
@@ -10,21 +12,21 @@ export const registerRouterBeforeEach = (router: Router) =>
       document.title = baseTitle;
     }
 
-    // const user = await getLoggedInUser();
-    const user = undefined;
-    if (!user) {
-      if (!to.meta.requiresAuth) {
-        return next();
-      } else {
-        return next({ name: 'login' });
-      }
-    }
-
-    // const userStore = useUserStore();
-    // userStore.setUser(user);
+    const user = await getLoggedInUserApi();
 
     if (!to.meta.requiresAuth) {
-      return next({ name: 'game-rooms' });
+      return next();
+    }
+
+    if (!user) {
+      return next({ name: 'login' });
+    }
+
+    const userStore = useUserStore();
+    userStore.setUser(user);
+
+    if (!to.meta.requiresAuth) {
+      return next({ name: 'rooms' });
     }
 
     next();

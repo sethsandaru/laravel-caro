@@ -17,7 +17,7 @@ class GoogleOauthService
     {
         $url = 'https://oauth2.googleapis.com/token';
 
-        $response = Http::asForm()->post($url, $x = [
+        $response = Http::asForm()->post($url, [
             'code' => $code,
             'client_id' => $this->googleClientId,
             'client_secret' => $this->googleClientSecret,
