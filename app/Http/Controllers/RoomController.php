@@ -40,11 +40,17 @@ class RoomController extends Controller
                 'status' => $room->status,
                 'totalPlayed' => $room->total_played,
                 'createdByUser' => [
+                    'ulid' => $room->createdByUser->ulid,
+                    'email' => $room->createdByUser->email,
                     'name' => $room->createdByUser->name,
+                    'profilePicture' => $room->createdByUser->profile_picture,
                 ],
                 'secondUser' => $room->secondUser
                     ? [
-                        'name' => $room->createdByUser->name,
+                        'ulid' => $room->secondUser->ulid,
+                        'email' => $room->secondUser->email,
+                        'name' => $room->secondUser->name,
+                        'profilePicture' => $room->secondUser->profile_picture,
                     ]
                     : null,
             ],

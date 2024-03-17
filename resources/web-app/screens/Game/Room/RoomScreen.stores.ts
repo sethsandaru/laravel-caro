@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { DetailedRoom } from '@/datasources/api/rooms/getRoomById.api';
+import { LoggedInUser } from '@/datasources/api/auth/getLoggedInUser.api';
 
 export const currentRoomStore = defineStore('currentRoom', () => {
   const room = ref<DetailedRoom>();
@@ -9,7 +10,7 @@ export const currentRoomStore = defineStore('currentRoom', () => {
     room.value = { ...wantedRoom };
   };
 
-  const setSecondUser = (user: { name: string }) => {
+  const setSecondUser = (user: LoggedInUser) => {
     if (!room.value) {
       return;
     }

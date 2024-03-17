@@ -2,9 +2,11 @@
   <div class="px-4 sm:px-6 lg:px-8">
     <div class="sm:flex sm:items-center">
       <div class="sm:flex-auto">
-        <h1 class="text-base font-semibold leading-6 text-gray-900">
+        <h1 class="text-xl font-semibold leading-6 text-gray-900 mb-10">
           Phòng: {{ room?.title ?? 'Đang tải dữ liệu' }}
         </h1>
+
+        <RoomHeader />
       </div>
     </div>
   </div>
@@ -18,6 +20,7 @@ import { AxiosError } from 'axios';
 import { showErrorAlert, showUnexpectedError } from '@/utils/toast';
 import { currentRoomStore } from '@/screens/Game/Room/RoomScreen.stores';
 import { storeToRefs } from 'pinia';
+import RoomHeader from '@/screens/Game/Room/components/RoomHeader.vue';
 
 const route = useRoute();
 const router = useRouter();
