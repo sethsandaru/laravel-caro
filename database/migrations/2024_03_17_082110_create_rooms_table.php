@@ -31,6 +31,7 @@ return new class extends Migration
             $table->unsignedSmallInteger('total_played')->default(0);
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 };
