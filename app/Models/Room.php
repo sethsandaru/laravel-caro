@@ -10,6 +10,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Room extends Model
 {
+    public const ROOM_STATUS_WAITING_FOR_ANOTHER_PLAYER = 'WAITING_FOR_ANOTHER_PLAYER';
+    public const ROOM_STATUS_WAITING_FOR_CONFIRMATION = 'WAITING_FOR_CONFIRMATION';
+    public const ROOM_STATUS_READY_TO_PLAY = 'READY_TO_PLAY';
+    public const ROOM_STATUS_PLAYING = 'PLAYING';
+
     use HasFactory;
     use UseUlidAsSecondaryIdentifier;
     use SoftDeletes;

@@ -11,6 +11,7 @@
       </div>
       <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
         <button
+          @click="createRoom"
           type="button"
           class="block rounded-md bg-pink-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-pink-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-600"
         >
@@ -52,25 +53,26 @@
             </thead>
             <tbody class="divide-y divide-gray-200">
               <tr
-                v-for="person in people"
-                :key="person.email"
+                v-for="room in rooms"
+                :key="room.ulid"
               >
                 <td
                   class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0"
                 >
-                  Phòng ABC
+                  {{ room.title }}
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  Đợi đủ người
+                  {{ getReadableRoomStatus(room.status) }}
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  0 ván
+                  {{ room.totalPlayed }} ván
                 </td>
                 <td
                   class="relative whitespace-nowrap py-4 pl-3 pr-4 text-sm font-medium sm:pr-0"
                 >
                   <div class="flex justify-end">
                     <button
+                      v-if="room.status === 'WAITING_FOR_ANOTHER_PLAYER'"
                       type="button"
                       class="block rounded-md bg-pink-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-pink-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-600"
                     >
@@ -88,13 +90,56 @@
 </template>
 
 <script setup lang="ts">
-const people = [
-  {
-    name: 'Lindsay Walton',
-    title: 'Front-end Developer',
-    email: 'lindsay.walton@example.com',
-    role: 'Member',
-  },
-  // More people...
-];
+import {
+  showInfoAlert,
+  showUnexpectedError,
+  showWarningAlert,
+} from '@/utils/toast';
+import { createRoomApi } from '@/datasources/api/rooms/createRoom.api';
+import { useRouter } from 'vue-router';
+import { onMounted, ref } from 'vue';
+import {
+  getReadableRoomStatus,
+  getRoomsApi,
+  Room,
+} from '@/datasources/api/rooms/getRooms.api';
+
+const router = useRouter();
+
+const rooms = ref<Room[]>([]);
+
+const loadRooms = async () => {
+  const res = await getRoomsApi().catch(() => undefined);
+  if (!res) {
+    return showUnexpectedError();
+  }
+
+  rooms.value = [...res.rooms];
+};
+
+const createRoom = async () => {
+  const roomName = prompt('Hãy điền tên phòng');
+  if (!roomName) {
+    return showWarningAlert('Tên phòng là bắt buộc', 'Lỗi tạo phòng');
+  }
+
+  const createRes = await createRoomApi(roomName).catch(() => undefined);
+  if (!createRes) {
+    return showUnexpectedError();
+  }
+
+  showInfoAlert(
+    'Tạo phòng thành công, chuyển hướng bạn đến phòng...',
+    'Thành công'
+  );
+
+  router.push({
+    name: 'room',
+    params: {
+      id: createRes,
+    },
+  });
+};
+
+onMounted(loadRooms);
 </script>

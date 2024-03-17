@@ -16,7 +16,12 @@ class RoomController extends Controller
             ->get();
 
         return JsonResponseFactory::successOutcome([
-            'rooms' => $rooms,
+            'rooms' => $rooms->map(fn (Room $room) => [
+                'ulid' => $room->ulid,
+                'title' => $room->title,
+                'status' => $room->status,
+                'totalPlayed' => $room->total_played,
+            ]),
         ]);
     }
 
@@ -45,10 +50,11 @@ class RoomController extends Controller
         $room = Room::create([
             'title' => $request->validated('title'),
             'created_by_user_id' => $user->id,
+            'status' => Room::ROOM_STATUS_WAITING_FOR_ANOTHER_PLAYER,
         ]);
 
         return JsonResponseFactory::successOutcome([
-            'room' => $room,
+            'roomId' => $room->ulid,
         ]);
     }
 

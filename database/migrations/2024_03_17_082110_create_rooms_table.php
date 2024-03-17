@@ -27,7 +27,7 @@ return new class extends Migration
              * READY_TO_PLAY
              * PLAYING
              */
-            $table->string('status')->default('WAITING_FOR_ANOTHER_PERSON');
+            $table->string('status')->default('WAITING_FOR_ANOTHER_PLAYER');
 
             $table->unsignedSmallInteger('total_played')->default(0);
 
