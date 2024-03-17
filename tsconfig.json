@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "module": "ES2020",
+    "composite": true,
+    "sourceMap": false,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "useDefineForClassFields": true,
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "baseUrl": ".",
+    "rootDirs": ["./resources/web-app/"],
+    "paths": {
+      "@/*": ["./resources/web-app/*"]
+    },
+    "allowJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "target": "ES2020",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noErrorTruncation": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": [
+    "resources/web-app/**/*.ts",
+    "resources/web-app/**/*.d.ts",
+    "resources/web-app/**/*.vue"
+  ],
+  "exclude": ["node_modules", "dist", "public", "*.test.ts"]
+}
