@@ -1,12 +1,13 @@
 <template>
   <div class="px-4 sm:px-6 lg:px-8">
     <div class="sm:flex sm:items-center">
-      <div class="sm:flex-auto">
-        <h1 class="text-xl font-semibold leading-6 text-gray-900 mb-10">
+      <div class="flex-auto flex-col flex gap-10">
+        <h1 class="text-xl font-semibold leading-6 text-gray-900">
           Phòng: {{ room?.title ?? 'Đang tải dữ liệu' }}
         </h1>
 
         <RoomHeader />
+        <CaroPlayground />
       </div>
     </div>
   </div>
@@ -21,6 +22,7 @@ import { showErrorAlert, showUnexpectedError } from '@/utils/toast';
 import { currentRoomStore } from '@/screens/Game/Room/RoomScreen.stores';
 import { storeToRefs } from 'pinia';
 import RoomHeader from '@/screens/Game/Room/components/RoomHeader.vue';
+import CaroPlayground from '@/screens/Game/Room/components/CaroPlayground.vue';
 
 const route = useRoute();
 const router = useRouter();
