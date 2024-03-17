@@ -14,12 +14,12 @@ declare module 'vue-router' {
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    component: () => import('@/screens/auth/AuthLayout.vue'),
+    component: () => import('@/screens/Auth/AuthLayout.vue'),
     children: [
       {
         path: '',
         name: 'login',
-        component: () => import('@/screens/auth/LoginScreen.vue'),
+        component: () => import('@/screens/Auth/LoginScreen.vue'),
         meta: {
           title: 'Đăng nhập',
         },
@@ -27,7 +27,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'login-with-google',
         name: 'login-with-google',
-        component: () => import('@/screens/auth/GoogleLoginScreen.vue'),
+        component: () => import('@/screens/Auth/GoogleLoginScreen.vue'),
         meta: {
           title: 'Đăng nhập với Google',
         },

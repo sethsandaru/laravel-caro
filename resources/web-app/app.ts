@@ -1,7 +1,7 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import App from './App.vue';
-import '@/css/app.css';
+import '../css/app.css';
 import router from '@/router';
 import notifications from '@kyvg/vue3-notification';
 
