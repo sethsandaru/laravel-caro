@@ -40,7 +40,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/screens/Game/GameLayout.vue'),
     children: [
       {
-        path: '/',
+        path: '',
         name: 'rooms',
         component: () => import('@/screens/Game/Rooms/RoomsScreen.vue'),
         meta: {

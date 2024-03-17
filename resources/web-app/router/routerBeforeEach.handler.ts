@@ -14,11 +14,11 @@ export const registerRouterBeforeEach = (router: Router) =>
 
     const user = await getLoggedInUserApi();
 
-    if (!to.meta.requiresAuth) {
-      return next();
-    }
-
     if (!user) {
+      if (!to.meta.requiresAuth) {
+        return next();
+      }
+
       return next({ name: 'login' });
     }
 
