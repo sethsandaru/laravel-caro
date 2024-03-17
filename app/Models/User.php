@@ -64,4 +64,14 @@ class User extends Authenticatable  implements JWTSubject
     {
         return $this->hasOne(Room::class, 'second_user_id');
     }
+
+    public function toSimpleUserInfo(): array
+    {
+        return [
+            'ulid' => $this->ulid,
+            'name' => $this->name,
+            'email' => $this->email,
+            'profilePicture' => $this->profile_picture
+        ];
+    }
 }
