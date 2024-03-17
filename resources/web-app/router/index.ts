@@ -19,7 +19,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         name: 'login',
-        component: () => import('@/screens/Auth/LoginScreen.vue'),
+        component: () => import('@/screens/Auth/Login/LoginScreen.vue'),
         meta: {
           title: 'Đăng nhập',
         },
@@ -27,7 +27,8 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'login-with-google',
         name: 'login-with-google',
-        component: () => import('@/screens/Auth/GoogleLoginScreen.vue'),
+        component: () =>
+          import('@/screens/Auth/LoginWithGoogle/LoginWithGoogleScreen.vue'),
         meta: {
           title: 'Đăng nhập với Google',
         },
@@ -41,7 +42,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/:catchAll(.*)*',
-    component: () => import('@/screens/common/Error404Page.vue'),
+    component: () => import('@/screens/Common/Error404Page.vue'),
   },
 ];
 
