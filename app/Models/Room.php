@@ -17,7 +17,7 @@ class Room extends Model
     protected $table = 'rooms';
 
     protected $fillable = [
-        'created_by_user',
+        'created_by_user_id',
         'second_user_id',
         'title',
         'status',
@@ -25,14 +25,14 @@ class Room extends Model
     ];
 
     protected $casts = [
-        'created_by_user' => 'int',
+        'created_by_user_id' => 'int',
         'second_user_id' => 'int',
         'total_played' => 'int',
     ];
 
     protected $hidden = [
         'id',
-        'created_by_user',
+        'created_by_user_id',
         'second_user_id',
         'updated_at',
         'deleted_at',
@@ -40,7 +40,7 @@ class Room extends Model
 
     public function createdByUser(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by_user');
+        return $this->belongsTo(User::class, 'created_by_user_id');
     }
 
     public function secondUser(): BelongsTo

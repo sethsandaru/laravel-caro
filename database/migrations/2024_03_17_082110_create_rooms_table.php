@@ -12,7 +12,8 @@ return new class extends Migration
             $table->id();
             $table->ulid()->unique();
 
-            $table->foreignId('created_by_user')
+            $table->foreignId('created_by_user_id')
+                ->nullable()
                 ->constrained('users');
 
             $table->foreignId('second_user_id')

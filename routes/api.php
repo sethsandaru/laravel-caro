@@ -23,5 +23,6 @@ Route::middleware('auth:api')
 
         Route::get('/rooms', [RoomController::class, 'index']);
         Route::get('/rooms/{room}', [RoomController::class, 'show']);
+        Route::patch('/rooms/{room}/get-out', [RoomController::class, 'getOut']);
     });
 
