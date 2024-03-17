@@ -10,7 +10,7 @@ export const currentRoomStore = defineStore('currentRoom', () => {
     room.value = { ...wantedRoom };
   };
 
-  const setSecondUser = (user: LoggedInUser) => {
+  const setSecondUser = (user: LoggedInUser | null) => {
     if (!room.value) {
       return;
     }

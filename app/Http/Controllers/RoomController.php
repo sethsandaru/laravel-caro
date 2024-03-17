@@ -105,6 +105,7 @@ class RoomController extends Controller
         if ($room->created_by_user_id === null) {
             $room->delete();
         } else {
+            $room->status = Room::ROOM_STATUS_WAITING_FOR_ANOTHER_PLAYER;
             $room->save();
         }
 

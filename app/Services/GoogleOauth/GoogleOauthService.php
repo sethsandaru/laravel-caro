@@ -3,7 +3,6 @@
 namespace App\Services\GoogleOauth;
 
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 class GoogleOauthService
 {
