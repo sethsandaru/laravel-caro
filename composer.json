@@ -1,12 +1,13 @@
 {
-    "name": "laravel/laravel",
+    "name": "sethsandaru/laravel-caro",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "description": "Laravel Caro - Chơi cờ Caro ",
+    "keywords": ["laravel", "laravel-caro"],
     "license": "MIT",
     "require": {
         "php": "^8.2",
         "laravel/framework": "^11.0",
+        "laravel/reverb": "@beta",
         "laravel/tinker": "^2.9"
     },
     "require-dev": {
