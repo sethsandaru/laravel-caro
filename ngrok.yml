@@ -1,0 +1,10 @@
+version: 2
+authtoken: 2ShILgYPxyojjnTk0snU1ssB7rM_4kvDRb7L3ngKaYqbwMdaN
+tunnels:
+  first:
+    proto: http
+    addr: 8000
+    domain: roughly-factual-bengal.ngrok-free.app
+  second:
+    proto: http
+    addr: 8080

@@ -1,5 +1,6 @@
 import { httpClient } from '@/datasources/api/axios';
 import { AxiosResponse } from 'axios';
+import { LoggedInUser } from '@/datasources/api/auth/getLoggedInUser.api';
 
 export type RoomStatus =
   | 'WAITING_FOR_ANOTHER_PLAYER'
@@ -12,6 +13,8 @@ export type Room = {
   title: string;
   status: RoomStatus;
   totalPlayed: number;
+  createdByUser: LoggedInUser;
+  secondUser?: LoggedInUser | null;
 };
 
 export const getRoomsApi = () =>

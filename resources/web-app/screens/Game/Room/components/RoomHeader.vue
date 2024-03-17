@@ -38,7 +38,7 @@
             </div>
             <div class="ml-4">
               <h3 class="text-base font-semibold leading-6 text-gray-900">
-                {{ room.secondUser?.profilePicture ?? 'Đang chờ gia nhập' }}
+                {{ room.secondUser?.name ?? 'Đang chờ gia nhập' }}
               </h3>
               <p
                 v-if="room.secondUser"

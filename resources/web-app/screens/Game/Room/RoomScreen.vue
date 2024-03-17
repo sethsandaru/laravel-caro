@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
-import { onMounted } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { getRoomByIdApi } from '@/datasources/api/rooms/getRoomById.api';
 import { AxiosError } from 'axios';
 import { showErrorAlert, showUnexpectedError } from '@/utils/toast';
@@ -23,11 +23,37 @@ import { currentRoomStore } from '@/screens/Game/Room/RoomScreen.stores';
 import { storeToRefs } from 'pinia';
 import RoomHeader from '@/screens/Game/Room/components/RoomHeader.vue';
 import CaroPlayground from '@/screens/Game/Room/components/CaroPlayground.vue';
+import Echo from 'laravel-echo';
+import { LoggedInUser } from '@/datasources/api/auth/getLoggedInUser.api';
+import { getEchoInstance } from '@/datasources/websocket/echo';
 
 const route = useRoute();
 const router = useRouter();
+
 const currentRoom = currentRoomStore();
 const { room } = storeToRefs(currentRoom);
+
+const echo = ref<Echo>(getEchoInstance());
+
+const channelId = computed(() => `playRoom.${room.value?.ulid}`);
+
+const initWebsocket = () => {
+  echo.value
+    .join(channelId.value)
+    .joining((user: LoggedInUser) => {
+      if (user.ulid === room.value?.createdByUser.ulid) {
+        return;
+      }
+
+      currentRoom.setSecondUser(user);
+    })
+    .leaving((user) => {
+      console.log(user.name);
+    })
+    .error((error) => {
+      console.error(error);
+    });
+};
 
 onMounted(async () => {
   const roomId = String(route.params.id);
@@ -54,5 +80,10 @@ onMounted(async () => {
   }
 
   currentRoom.setRoom(roomRes.room);
+  initWebsocket();
+});
+
+onUnmounted(() => {
+  echo.value?.leave(channelId.value);
 });
 </script>

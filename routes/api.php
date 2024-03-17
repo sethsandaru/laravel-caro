@@ -24,6 +24,7 @@ Route::middleware('auth:api')
         Route::get('/rooms', [RoomController::class, 'index']);
         Route::get('/rooms/{room}', [RoomController::class, 'show']);
         Route::post('/rooms', [RoomController::class, 'create']);
+        Route::patch('/rooms/{room}/join', [RoomController::class, 'joinRoom']);
         Route::patch('/rooms/{room}/get-out', [RoomController::class, 'getOut']);
     });
 

@@ -5,15 +5,18 @@ namespace App\Http\Controllers;
 use App\Http\JsonResponseFactory;
 use App\Http\Request\Room\CreateRoomRequest;
 use App\Http\Request\Room\GetRoomByIdRequest;
+use App\Http\Request\Room\JoinRoomRequest;
 use App\Models\Room;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RoomController extends Controller
 {
     public function index(): JsonResponse
     {
         $rooms = Room::orderBy('created_at', 'DESC')
+            ->with('createdByUser')
             ->get();
 
         return JsonResponseFactory::successOutcome([
@@ -22,6 +25,8 @@ class RoomController extends Controller
                 'title' => $room->title,
                 'status' => $room->status,
                 'totalPlayed' => $room->total_played,
+                'createdByUser' => $room->createdByUser->toSimpleUserInfo(),
+                'secondUser' => $room->secondUser?->toSimpleUserInfo(),
             ]),
         ]);
     }
@@ -39,20 +44,8 @@ class RoomController extends Controller
                 'title' => $room->title,
                 'status' => $room->status,
                 'totalPlayed' => $room->total_played,
-                'createdByUser' => [
-                    'ulid' => $room->createdByUser->ulid,
-                    'email' => $room->createdByUser->email,
-                    'name' => $room->createdByUser->name,
-                    'profilePicture' => $room->createdByUser->profile_picture,
-                ],
-                'secondUser' => $room->secondUser
-                    ? [
-                        'ulid' => $room->secondUser->ulid,
-                        'email' => $room->secondUser->email,
-                        'name' => $room->secondUser->name,
-                        'profilePicture' => $room->secondUser->profile_picture,
-                    ]
-                    : null,
+                'createdByUser' => $room->createdByUser->toSimpleUserInfo(),
+                'secondUser' => $room->secondUser?->toSimpleUserInfo(),
             ],
         ]);
     }
@@ -72,6 +65,22 @@ class RoomController extends Controller
             'created_by_user_id' => $user->id,
             'status' => Room::ROOM_STATUS_WAITING_FOR_ANOTHER_PLAYER,
         ]);
+
+        return JsonResponseFactory::successOutcome([
+            'roomId' => $room->ulid,
+        ]);
+    }
+
+    public function joinRoom(JoinRoomRequest $request, Room $room): JsonResponse
+    {
+        $user = $request->user();
+        DB::transaction(function () use ($room, $user) {
+            $room->lockForUpdate();
+            $room->update([
+                'status' => Room::ROOM_STATUS_WAITING_FOR_CONFIRMATION,
+                'second_user_id' => $user->id,
+            ]);
+        });
 
         return JsonResponseFactory::successOutcome([
             'roomId' => $room->ulid,

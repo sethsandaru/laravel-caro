@@ -72,11 +72,36 @@
                 >
                   <div class="flex justify-end">
                     <button
-                      v-if="room.status === 'WAITING_FOR_ANOTHER_PLAYER'"
+                      v-if="
+                        user?.ulid !== room.createdByUser?.ulid &&
+                        !room.secondUser &&
+                        room.status === 'WAITING_FOR_ANOTHER_PLAYER'
+                      "
                       type="button"
                       class="block rounded-md bg-pink-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-pink-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-600"
+                      @click="joinRoom(room)"
                     >
                       Gia nhập
+                    </button>
+                    <button
+                      v-if="
+                        [
+                          room.createdByUser.ulid,
+                          room.secondUser?.ulid ?? '',
+                        ].includes(user?.ulid)
+                      "
+                      type="button"
+                      class="block rounded-md bg-pink-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-pink-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-600"
+                      @click="
+                        $router.push({
+                          name: 'room',
+                          params: {
+                            id: room.ulid,
+                          },
+                        })
+                      "
+                    >
+                      Vào lại phòng
                     </button>
                   </div>
                 </td>
@@ -103,8 +128,14 @@ import {
   getRoomsApi,
   Room,
 } from '@/datasources/api/rooms/getRooms.api';
+import { useUserStore } from '@/stores/user.store';
+import { storeToRefs } from 'pinia';
+import { joinRoomByIdApi } from '@/datasources/api/rooms/joinRoomById.api';
 
 const router = useRouter();
+
+const currentUser = useUserStore();
+const { user } = storeToRefs(currentUser);
 
 const rooms = ref<Room[]>([]);
 
@@ -137,6 +168,33 @@ const createRoom = async () => {
     name: 'room',
     params: {
       id: createRes,
+    },
+  });
+};
+
+const joinRoom = async (room: Room) => {
+  const res = await joinRoomByIdApi(room.ulid);
+
+  if (res === 'ALREADY_HAVE_MEMBER_JOINED') {
+    showWarningAlert(
+      'Đã có người chơi khác tham gia phòng này, xin mời bạn hãy vào phòng khác.',
+      'Phòng đã đầy'
+    );
+
+    return loadRooms();
+  }
+
+  if (res === 'UNKNOWN') {
+    showUnexpectedError();
+
+    return;
+  }
+
+  showInfoAlert('Vào phòng thành công, đang chuyển hướng,...', 'Thành công');
+  router.push({
+    name: 'room',
+    params: {
+      id: room.ulid,
     },
   });
 };
