@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\JsonResponseFactory;
 use App\Http\Request\Room\CreateRoomRequest;
+use App\Http\Request\Room\GetRoomByIdRequest;
 use App\Models\Room;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -25,7 +26,7 @@ class RoomController extends Controller
         ]);
     }
 
-    public function show(Room $room): JsonResponse
+    public function show(GetRoomByIdRequest $request, Room $room): JsonResponse
     {
         $room->load([
             'createdByUser',
@@ -33,7 +34,20 @@ class RoomController extends Controller
         ]);
 
         return JsonResponseFactory::successOutcome([
-            'room' => $room,
+            'room' => [
+                'ulid' => $room->ulid,
+                'title' => $room->title,
+                'status' => $room->status,
+                'totalPlayed' => $room->total_played,
+                'createdByUser' => [
+                    'name' => $room->createdByUser->name,
+                ],
+                'secondUser' => $room->secondUser
+                    ? [
+                        'name' => $room->createdByUser->name,
+                    ]
+                    : null,
+            ],
         ]);
     }
 

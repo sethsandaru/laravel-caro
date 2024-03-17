@@ -2,9 +2,12 @@
 
 namespace App\Providers;
 
+use App\Models\Room;
+use App\Policies\RoomPolicy;
 use App\Services\GoogleOauth\GoogleOauthService;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
@@ -27,5 +30,7 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->ulid ?: $request->ip());
         });
+
+        Gate::policy(Room::class, RoomPolicy::class);
     }
 }
