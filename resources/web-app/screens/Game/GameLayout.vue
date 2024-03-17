@@ -27,12 +27,12 @@
                   :key="item.name"
                   :href="item.href"
                   :class="[
-                    item.current
+                    item.current()
                       ? 'border-pink-500 text-gray-900'
                       : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
                     'inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium',
                   ]"
-                  :aria-current="item.current ? 'page' : undefined"
+                  :aria-current="item.current() ? 'page' : undefined"
                 >
                   {{ item.name }}
                 </a>
@@ -116,14 +116,15 @@
               as="a"
               :href="item.href"
               :class="[
-                item.current
+                item.current()
                   ? 'border-pink-500 bg-pink-50 text-pink-700'
                   : 'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800',
                 'block border-l-4 py-2 pl-3 pr-4 text-base font-medium',
               ]"
-              :aria-current="item.current ? 'page' : undefined"
-              >{{ item.name }}</DisclosureButton
+              :aria-current="item.current() ? 'page' : undefined"
             >
+              {{ item.name }}
+            </DisclosureButton>
           </div>
           <div class="border-t border-gray-200 pb-3 pt-4">
             <div class="flex items-center px-4">
@@ -169,7 +170,7 @@
   </Teleport>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {
   Disclosure,
   DisclosureButton,
@@ -179,7 +180,7 @@ import {
   MenuItem,
   MenuItems,
 } from '@headlessui/vue';
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/vue/24/outline';
+import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline';
 import { useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/user.store';
 import { storeToRefs } from 'pinia';
