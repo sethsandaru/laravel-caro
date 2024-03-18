@@ -6,12 +6,18 @@ import {
 } from '@/datasources/api/rooms/getRoomById.api';
 import { LoggedInUser } from '@/datasources/api/auth/getLoggedInUser.api';
 import { AxiosError } from 'axios';
+import { PresenceChannel } from 'laravel-echo';
 
 export const currentRoomStore = defineStore('currentRoom', () => {
   const room = ref<DetailedRoom>();
+  const roomChannel = ref<PresenceChannel>();
 
   const setRoom = (wantedRoom: DetailedRoom) => {
     room.value = { ...wantedRoom };
+  };
+
+  const setChannel = (channel: PresenceChannel) => {
+    roomChannel.value = channel;
   };
 
   const setCreatorUser = (user: LoggedInUser) => {
@@ -53,5 +59,13 @@ export const currentRoomStore = defineStore('currentRoom', () => {
     return true;
   };
 
-  return { room, setRoom, setCreatorUser, setSecondUser, refreshRoom };
+  return {
+    room,
+    roomChannel,
+    setRoom,
+    setCreatorUser,
+    setSecondUser,
+    refreshRoom,
+    setChannel,
+  };
 });

@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SecondPlayerReady;
+use App\Events\SecondPlayerUnready;
 use App\Http\JsonResponseFactory;
 use App\Http\Request\Room\CreateRoomRequest;
 use App\Http\Request\Room\GetRoomByIdRequest;
 use App\Http\Request\Room\JoinRoomRequest;
+use App\Http\Request\Room\MarkAsReadyToPlayRequest;
+use App\Http\Request\Room\MarkAsUnReadyToPlayRequest;
 use App\Models\Room;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 
 class RoomController extends Controller
 {
@@ -112,5 +117,37 @@ class RoomController extends Controller
         }
 
         return JsonResponseFactory::successOutcome();
+    }
+
+    public function markAsReadyToPlay(MarkAsReadyToPlayRequest $request, Room $room): JsonResponse
+    {
+        DB::transaction(function () use ($room) {
+            $room->lockForUpdate();
+            $room->update([
+                'status' => Room::ROOM_STATUS_READY_TO_PLAY,
+            ]);
+        });
+
+        broadcast(new SecondPlayerReady($room));
+
+        return JsonResponseFactory::successOutcome([
+            'roomId' => $room->ulid,
+        ]);
+    }
+
+    public function markAsUnReadyToPlay(MarkAsUnReadyToPlayRequest $request, Room $room): JsonResponse
+    {
+        DB::transaction(function () use ($room) {
+            $room->lockForUpdate();
+            $room->update([
+                'status' => Room::ROOM_STATUS_WAITING_FOR_CONFIRMATION,
+            ]);
+        });
+
+        broadcast(new SecondPlayerUnready($room));
+
+        return JsonResponseFactory::successOutcome([
+            'roomId' => $room->ulid,
+        ]);
     }
 }

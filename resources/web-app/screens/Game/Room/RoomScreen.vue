@@ -21,10 +21,12 @@
         </div>
 
         <RoomHeader
+          :playing="isPlaying"
           :ready="isSecondPlayerReady"
+          @start="startTheGame"
           @ready="markReadyToPlay"
         />
-        <CaroPlayground />
+        <CaroPlayground :disabled="!isPlaying" />
       </div>
     </div>
   </div>
@@ -39,6 +41,7 @@ import {
   showErrorAlert,
   showInfoAlert,
   showUnexpectedError,
+  showWarningAlert,
 } from '@/utils/toast';
 import { currentRoomStore } from '@/screens/Game/Room/RoomScreen.stores';
 import { storeToRefs } from 'pinia';
@@ -49,22 +52,27 @@ import { LoggedInUser } from '@/datasources/api/auth/getLoggedInUser.api';
 import { getEchoInstance } from '@/datasources/websocket/echo';
 import { XCircleIcon } from '@heroicons/vue/24/solid';
 import { getOutOfRoomByIdApi } from '@/datasources/api/rooms/getOutOfRoomById.api';
+import { markAsReadyForRoomByIdApi } from '@/datasources/api/rooms/markAsReadyForRoomById.api';
+import { markAsUnReadyForRoomByIdApi } from '@/datasources/api/rooms/markAsUnReadyForRoomById.api';
 
 const route = useRoute();
 const router = useRouter();
 
 const currentRoom = currentRoomStore();
-const { room } = storeToRefs(currentRoom);
+const { room, roomChannel } = storeToRefs(currentRoom);
 
 const echo = ref<Echo>(getEchoInstance());
 
 const channelId = computed(() => `playRoom.${room.value?.ulid}`);
 
+const isPlaying = ref(false);
 const isSecondPlayerReady = ref(false);
 
 const initWebsocket = () => {
-  echo.value
-    .join(channelId.value)
+  const channel = echo.value.join(channelId.value);
+  currentRoom.setChannel(channel);
+
+  channel
     .here(() => {
       console.log('joined');
     })
@@ -86,6 +94,14 @@ const initWebsocket = () => {
 
         router.replace({ name: 'rooms' });
       });
+    })
+    .listen('SecondPlayerReady', (e) => {
+      console.log('ready');
+      isSecondPlayerReady.value = true;
+    })
+    .listen('SecondPlayerUnready', (e) => {
+      console.log('unready');
+      isSecondPlayerReady.value = false;
     })
     .error((error) => {
       console.error(error);
@@ -117,6 +133,7 @@ onMounted(async () => {
   }
 
   currentRoom.setRoom(roomRes.room);
+  isSecondPlayerReady.value = roomRes.room.status === 'READY_TO_PLAY';
   initWebsocket();
 });
 
@@ -137,7 +154,32 @@ const leaveRoom = async () => {
   return router.replace({ name: 'rooms' });
 };
 
-const markReadyToPlay = () => {
-  isSecondPlayerReady.value = !isSecondPlayerReady.value;
+const markReadyToPlay = async () => {
+  if (!isSecondPlayerReady.value) {
+    const res = await markAsReadyForRoomByIdApi(room.value!.ulid);
+    if (!res) {
+      return showUnexpectedError();
+    }
+
+    isSecondPlayerReady.value = true;
+    return;
+  }
+
+  const res = await markAsUnReadyForRoomByIdApi(room.value!.ulid);
+  if (!res) {
+    return showUnexpectedError();
+  }
+
+  isSecondPlayerReady.value = false;
+  return;
+};
+
+const startTheGame = async () => {
+  if (!isSecondPlayerReady.value) {
+    return showWarningAlert(
+      'Người chơi thứ 2 chưa sẵn sàng',
+      'Chưa đủ điều kiện chơi'
+    );
+  }
 };
 </script>

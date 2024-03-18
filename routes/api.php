@@ -26,5 +26,7 @@ Route::middleware('auth:api')
         Route::post('/rooms', [RoomController::class, 'create']);
         Route::patch('/rooms/{room}/join', [RoomController::class, 'joinRoom']);
         Route::patch('/rooms/{room}/get-out', [RoomController::class, 'getOut']);
+        Route::patch('/rooms/{room}/ready', [RoomController::class, 'markAsReadyToPlay']);
+        Route::patch('/rooms/{room}/unready', [RoomController::class, 'markAsUnReadyToPlay']);
     });
 
