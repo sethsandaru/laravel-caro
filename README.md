@@ -29,7 +29,21 @@ Với việc ra mắt Laravel Reverb khi Laravel 11 ra mắt, việc implement r
 - Chơi
 - Kết quả sẽ được tính trên Backend
 
-## Feature considerations
+## Features có thể làm
 
-- Bảng xếp hạng
+- Chatbox giữa 2 người chơi
+- Bảng xếp hạng (ngày, tuần, tháng, năm)
 - Lịch sử thi đấu
+- Lịch sử từng nước đi
+
+## Learning notes
+
+TBD
+
+## Lưu ý
+
+Đây là một sản phẩn Open Source để chia sẻ kiến thức theo MIT License. 
+
+## Powered by
+
+Seth Phat 2024
