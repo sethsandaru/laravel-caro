@@ -51,9 +51,10 @@
         </div>
         <div class="ml-4 mt-4 flex flex-shrink-0">
           <button
-            v-if="user?.ulid === room.createdByUser.ulid"
+            v-if="user?.ulid === room.createdByUser.ulid && !playing"
             type="button"
             class="relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+            @click="$emit('start')"
           >
             <PlayIcon
               class="-ml-0.5 mr-1.5 h-5 w-5 text-gray-400"
@@ -64,10 +65,21 @@
           <button
             v-if="user?.ulid === room.secondUser?.ulid"
             type="button"
-            class="relative ml-3 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+            class="relative ml-3 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm ring-1 ring-inset"
+            :class="{
+              'ring-gray-300 bg-white hover:bg-gray-50 text-gray-900': !ready,
+              'bg-pink-500 text-white hover:bg-pink-400 ring-pink-400': ready,
+            }"
+            @click="$emit('ready')"
           >
             <BoltIcon
+              v-if="!ready"
               class="-ml-0.5 mr-1.5 h-5 w-5 text-gray-400"
+              aria-hidden="true"
+            />
+            <BoltSlashIcon
+              v-else
+              class="-ml-0.5 mr-1.5 h-5 w-5 text-white"
               aria-hidden="true"
             />
             <span>Sẵn sàng</span>
@@ -83,6 +95,19 @@ import { BoltIcon, BoltSlashIcon, PlayIcon } from '@heroicons/vue/24/solid';
 import { currentRoomStore } from '@/screens/Game/Room/RoomScreen.stores';
 import { storeToRefs } from 'pinia';
 import { useUserStore } from '@/stores/user.store';
+
+type Props = {
+  playing?: boolean;
+  ready?: boolean;
+};
+
+type Emits = {
+  (e: 'ready'): void;
+  (e: 'start'): void;
+};
+
+defineProps<Props>();
+defineEmits<Emits>();
 
 const currentRoom = currentRoomStore();
 const { room } = storeToRefs(currentRoom);

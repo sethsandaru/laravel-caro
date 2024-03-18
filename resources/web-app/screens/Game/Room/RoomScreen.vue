@@ -20,7 +20,10 @@
           </button>
         </div>
 
-        <RoomHeader />
+        <RoomHeader
+          :ready="isSecondPlayerReady"
+          @ready="markReadyToPlay"
+        />
         <CaroPlayground />
       </div>
     </div>
@@ -41,7 +44,7 @@ import { currentRoomStore } from '@/screens/Game/Room/RoomScreen.stores';
 import { storeToRefs } from 'pinia';
 import RoomHeader from '@/screens/Game/Room/components/RoomHeader.vue';
 import CaroPlayground from '@/screens/Game/Room/components/CaroPlayground.vue';
-import Echo, { PresenceChannel } from 'laravel-echo';
+import Echo from 'laravel-echo';
 import { LoggedInUser } from '@/datasources/api/auth/getLoggedInUser.api';
 import { getEchoInstance } from '@/datasources/websocket/echo';
 import { XCircleIcon } from '@heroicons/vue/24/solid';
@@ -56,6 +59,8 @@ const { room } = storeToRefs(currentRoom);
 const echo = ref<Echo>(getEchoInstance());
 
 const channelId = computed(() => `playRoom.${room.value?.ulid}`);
+
+const isSecondPlayerReady = ref(false);
 
 const initWebsocket = () => {
   echo.value
@@ -74,9 +79,13 @@ const initWebsocket = () => {
     .leaving((user: LoggedInUser) => {
       console.log('user leave channel', user);
 
-      if (user.ulid === room.value?.secondUser?.ulid) {
-        return currentRoom.setSecondUser(null);
-      }
+      currentRoom.refreshRoom().then((res) => {
+        if (res) {
+          return;
+        }
+
+        router.replace({ name: 'rooms' });
+      });
     })
     .error((error) => {
       console.error(error);
@@ -126,5 +135,9 @@ const leaveRoom = async () => {
   showInfoAlert('Đã rời khỏi phòng thành công', 'Rời khỏi phòng');
 
   return router.replace({ name: 'rooms' });
+};
+
+const markReadyToPlay = () => {
+  isSecondPlayerReady.value = !isSecondPlayerReady.value;
 };
 </script>

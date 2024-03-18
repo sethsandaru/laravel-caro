@@ -90,12 +90,13 @@ class RoomController extends Controller
     public function getOut(Room $room, Request $request)
     {
         $user = $request->user();
-        if ($room->created_by_user_id !== $user->id && $room->second_user_id !== $user->id) {
+        if (!$user->can('canView', $room)) {
             return JsonResponseFactory::outcome('INVALID_ROOM')->badRequest();
         }
 
         if ($room->created_by_user_id === $user->id) {
             $room->created_by_user_id = $room->second_user_id;
+            $room->second_user_id = null;
         }
 
         if ($room->second_user_id === $user->id) {
@@ -103,6 +104,7 @@ class RoomController extends Controller
         }
 
         if ($room->created_by_user_id === null) {
+            $room->save();
             $room->delete();
         } else {
             $room->status = Room::ROOM_STATUS_WAITING_FOR_ANOTHER_PLAYER;

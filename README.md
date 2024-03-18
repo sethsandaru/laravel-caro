@@ -1,7 +1,8 @@
 # Laravel Caro x Seth Phat
 
-<img src="./resources/web-app/assets/logo.png" align="center" width="300">
-
+<p align="center" width="100%">
+    <img src="./resources/web-app/assets/logo.png" align="center" width="300">
+</p>
 
 Laravel Caro là một ứng dụng game Caro Online realtime đơn giản. Viết bởi [@sethsandaru](https://github.com/sethsandaru)
 
@@ -28,3 +29,7 @@ Với việc ra mắt Laravel Reverb khi Laravel 11 ra mắt, việc implement r
 - Chơi
 - Kết quả sẽ được tính trên Backend
 
+## Feature considerations
+
+- Bảng xếp hạng
+- Lịch sử thi đấu
