@@ -21,6 +21,12 @@ return new class extends Migration
             $table->foreignId('second_player_user_id')
                 ->constrained('users');
 
+            $table->foreignId('first_turn_user_id')
+                ->constrained('users');
+
+            $table->foreignId('next_turn_user_id')
+                ->constrained('users');
+
             $table->jsonb('games');
 
             $table->foreignId('winner_user_id')

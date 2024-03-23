@@ -96,10 +96,10 @@ const initWebsocket = () => {
       console.log('unready');
       isSecondPlayerReady.value = false;
     })
-    // .listen('NewGameStarted', () => {
-    //   console.log('new-game-start');
-    //   isPlaying.value = true;
-    // })
+    .listen('NewGameStarted', () => {
+      console.log('new-game-start');
+      isPlaying.value = true;
+    })
     .error((error: unknown) => {
       console.error(error);
     });
