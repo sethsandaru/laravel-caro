@@ -9,21 +9,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class SecondPlayerUnready implements ShouldBroadcastNow
+class SecondPlayerUnready extends BaseRoomEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    public function __construct(public Room $room)
-    {
-        $this->broadcastToEveryone();
-    }
-
-    public function broadcastOn(): array
-    {
-        $channelId = 'playRoom.' . $this->room->ulid;
-
-        return [
-            new PresenceChannel($channelId),
-        ];
-    }
 }

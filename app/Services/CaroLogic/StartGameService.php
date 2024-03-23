@@ -27,9 +27,9 @@ class StartGameService
             ...$this->acquireFirstTurnPlayer(),
         ]);
 
-//        $this->room->fill([
-//            'status' => Room::ROOM_STATUS_PLAYING,
-//        ]);
+        $this->room->fill([
+            'status' => Room::ROOM_STATUS_PLAYING,
+        ]);
 
         broadcast(new NewGameStarted($this->room, $roomGame));
         broadcast(new NextTurnAvailable($this->room, $roomGame, $roomGame->nextTurnUser));

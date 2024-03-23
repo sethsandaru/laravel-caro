@@ -10,8 +10,10 @@ class SetMoveService
 {
     protected RoomGame $roomGame;
 
-    public function __construct(private CaroWinnerCalculator $caroWinnerCalculator)
-    {
+    public function __construct(
+        private readonly CaroWinnerCalculator $caroWinnerCalculator,
+        private readonly RefreshRoomService $refreshRoomService
+    ) {
     }
 
     public function setRoomGame(RoomGame $roomGame): self
@@ -44,11 +46,15 @@ class SetMoveService
                 : $room->created_by_user_id,
         ];
 
+        // data if we have a winner
         if ($winnerNumber > 0) {
-            $updateValues['winner_user_id'] = $winnerNumber === 1
-                ? $room->created_by_user_id
-                : $room->second_user_id;
-            $updateValues['next_turn_user_id'] = null;
+            $updateValues = [
+                ...$updateValues,
+                'winner_user_id' => $winnerNumber === 1
+                    ? $room->created_by_user_id
+                    : $room->second_user_id,
+                'next_turn_user_id' => null,
+            ];
         }
 
         $this->roomGame->fill($updateValues)->save();
@@ -66,5 +72,8 @@ class SetMoveService
             $this->roomGame,
             $this->roomGame->winnerUser
         ));
+
+        $this->refreshRoomService->setRoom($room)
+            ->refresh();
     }
 }
