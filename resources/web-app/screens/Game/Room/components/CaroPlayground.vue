@@ -1,5 +1,13 @@
 <template>
   <div class="mx-auto">
+    <div v-if="nextTurnUserId">
+      <p class="text-md text-center font-medium text-gray-700 mb-4">
+        Tới lượt chơi của
+        <strong class="text-pink-500">{{ nextTurnUserName }}</strong> 🎲
+      </p>
+    </div>
+    <div v-if="winnerUserId"></div>
+
     <table>
       <tbody>
         <tr
@@ -62,13 +70,13 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, toRef } from 'vue';
+import { computed, onMounted, ref, toRef } from 'vue';
 import { currentRoomStore } from '@/screens/Game/Room/RoomScreen.stores';
 import { storeToRefs } from 'pinia';
 import { getDefaultBoard } from '@/screens/Game/Room/components/CaroPlayground.methods';
 import { useUserStore } from '@/stores/user.store';
 import { setMoveInBoardApi } from '@/datasources/api/rooms/setMoveInBoard.api';
-import { showUnexpectedError } from '@/utils/toast';
+import { showInfoAlert, showUnexpectedError } from '@/utils/toast';
 
 type Props = {
   disabled?: boolean;
@@ -87,6 +95,27 @@ const currentGameId = ref<string>();
 const board = ref<number[][]>(getDefaultBoard());
 
 const nextTurnUserId = ref<string>();
+const winnerUserId = ref<string>();
+
+const nextTurnUserName = computed(() => {
+  if (!nextTurnUserId.value) {
+    return '';
+  }
+
+  return nextTurnUserId.value === room.value?.createdByUser.ulid
+    ? room.value?.createdByUser.name
+    : room.value?.secondUser?.name;
+});
+
+const winnerUserName = computed(() => {
+  if (!winnerUserId.value) {
+    return '';
+  }
+
+  return winnerUserId.value === room.value?.createdByUser.ulid
+    ? room.value?.createdByUser.name
+    : room.value?.secondUser?.name;
+});
 
 const select = async (rowIdx: number, colIdx: number) => {
   if (
@@ -125,11 +154,20 @@ onMounted(() => {
   roomChannel.value
     ?.listen('NewGameStarted', (data) => {
       currentGameId.value = data.roomGame.ulid;
+      winnerUserId.value = undefined;
+
       setBoard(data.roomGame.games);
     })
     .listen('NextTurnAvailable', (data) => {
-      setBoard(data.roomGame.games);
       nextTurnUserId.value = data.user.ulid;
+
+      setBoard(data.roomGame.games);
+    })
+    .listen('GameFinished', (data) => {
+      nextTurnUserId.value = undefined;
+      winnerUserId.value = data.winner.ulid;
+
+      setBoard(data.roomGame.games);
     });
 });
 </script>

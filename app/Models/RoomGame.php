@@ -32,6 +32,11 @@ class RoomGame extends Model
         'winner_user_id' => 'int',
     ];
 
+    public function room(): BelongsTo
+    {
+        return $this->belongsTo(Room::class, 'room_id');
+    }
+
     public function firstTurnUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'first_turn_user_id');
@@ -40,5 +45,10 @@ class RoomGame extends Model
     public function nextTurnUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'next_turn_user_id');
+    }
+
+    public function winnerUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'winner_user_id');
     }
 }

@@ -102,11 +102,20 @@ const initWebsocket = () => {
       console.log('unready');
       isSecondPlayerReady.value = false;
     })
-    .listen('NewGameStarted', (e) => {
+    .listen('NewGameStarted', () => {
       console.log('new-game-start');
+
       isPlaying.value = true;
+      winnerUserId.value = undefined;
 
       showInfoAlert('Trò chơi bắt đầu!!', 'Chơi thôi');
+    })
+    .listen('GameFinished', (data) => {
+      console.log('game-finished');
+
+      isPlaying.value = false;
+
+      showInfoAlert('Đã tìm ra người chiến thắng', 'Game đã kết thúc');
     })
     .error((error: unknown) => {
       console.error(error);

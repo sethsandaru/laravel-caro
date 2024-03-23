@@ -44,7 +44,7 @@
                 v-if="room.secondUser"
                 class="text-sm text-gray-500"
               >
-                <a href="#">Chưa sẵn sàng</a>
+                <a href="#">{{ ready ? 'Sẵn sàng' : 'Chưa sẵn sàng' }}</a>
               </p>
             </div>
           </div>

@@ -25,13 +25,14 @@ return new class extends Migration
                 ->constrained('users');
 
             $table->foreignId('next_turn_user_id')
+                ->nullable()
                 ->constrained('users');
-
-            $table->jsonb('games');
 
             $table->foreignId('winner_user_id')
                 ->nullable()
                 ->constrained('users');
+
+            $table->jsonb('games');
 
             $table->timestamps();
         });

@@ -42,11 +42,28 @@ type NextTurnAvailableEvent = {
   };
 };
 
+type GameFinishedEvent = {
+  type: 'GameFinished';
+  payload: {
+    room: {
+      ulid: string;
+    };
+    roomGame: {
+      ulid: string;
+      games: number[][];
+    };
+    winner: {
+      ulid: string;
+    };
+  };
+};
+
 type RoomGameEvent =
   | SecondPlayerReadyEvent
   | SecondPlayerUnreadyEvent
   | NewGameStartedEvent
-  | NextTurnAvailableEvent;
+  | NextTurnAvailableEvent
+  | GameFinishedEvent;
 
 export interface RoomGameChannel extends StrictPresenceChannel<RoomGameEvent> {}
 
