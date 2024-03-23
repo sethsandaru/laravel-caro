@@ -28,4 +28,6 @@ class RoomGame extends Model
         'games' => 'array',
         'winner_user_id' => 'int',
     ];
+
+
 }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\RoomGameController;
 use App\Http\JsonResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,5 +29,7 @@ Route::middleware('auth:api')
         Route::patch('/rooms/{room}/get-out', [RoomController::class, 'getOut']);
         Route::patch('/rooms/{room}/ready', [RoomController::class, 'markAsReadyToPlay']);
         Route::patch('/rooms/{room}/unready', [RoomController::class, 'markAsUnReadyToPlay']);
+
+        Route::post('/rooms/{room}/start-new-game', [RoomGameController::class, 'startNewGame']);
     });
 

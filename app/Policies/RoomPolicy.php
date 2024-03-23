@@ -30,4 +30,9 @@ class RoomPolicy
         return $room->second_user_id === $user->id
             && $room->status === Room::ROOM_STATUS_READY_TO_PLAY;
     }
+
+    public function canStart(User $user, Room $room): bool
+    {
+        return $room->created_by_user_id === $user->id;
+    }
 }

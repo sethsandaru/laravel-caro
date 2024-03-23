@@ -95,15 +95,15 @@ const initWebsocket = () => {
         router.replace({ name: 'rooms' });
       });
     })
-    .listen('SecondPlayerReady', (e) => {
+    .listen('SecondPlayerReady', () => {
       console.log('ready');
       isSecondPlayerReady.value = true;
     })
-    .listen('SecondPlayerUnready', (e) => {
+    .listen('SecondPlayerUnready', () => {
       console.log('unready');
       isSecondPlayerReady.value = false;
     })
-    .error((error) => {
+    .error((error: unknown) => {
       console.error(error);
     });
 };
