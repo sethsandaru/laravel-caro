@@ -6,7 +6,6 @@
         <strong class="text-pink-500">{{ nextTurnUserName }}</strong> 🎲
       </p>
     </div>
-    <div v-if="winnerUserId"></div>
 
     <table>
       <tbody>
@@ -95,7 +94,6 @@ const currentGameId = ref<string>();
 const board = ref<number[][]>(getDefaultBoard());
 
 const nextTurnUserId = ref<string>();
-const winnerUserId = ref<string>();
 
 const nextTurnUserName = computed(() => {
   if (!nextTurnUserId.value) {
@@ -103,16 +101,6 @@ const nextTurnUserName = computed(() => {
   }
 
   return nextTurnUserId.value === room.value?.createdByUser.ulid
-    ? room.value?.createdByUser.name
-    : room.value?.secondUser?.name;
-});
-
-const winnerUserName = computed(() => {
-  if (!winnerUserId.value) {
-    return '';
-  }
-
-  return winnerUserId.value === room.value?.createdByUser.ulid
     ? room.value?.createdByUser.name
     : room.value?.secondUser?.name;
 });
@@ -154,8 +142,6 @@ onMounted(() => {
   roomChannel.value
     ?.listen('NewGameStarted', (data) => {
       currentGameId.value = data.roomGame.ulid;
-      winnerUserId.value = undefined;
-
       setBoard(data.roomGame.games);
     })
     .listen('NextTurnAvailable', (data) => {
@@ -165,8 +151,6 @@ onMounted(() => {
     })
     .listen('GameFinished', (data) => {
       nextTurnUserId.value = undefined;
-      winnerUserId.value = data.winner.ulid;
-
       setBoard(data.roomGame.games);
     });
 });

@@ -8,7 +8,7 @@
           </h1>
           <LeaveRoomButton
             :playing="isPlaying"
-            @leave="leaveRoom"
+            @leave="leaveChannel"
           />
         </div>
 
@@ -65,6 +65,8 @@ const channelId = computed(() => `playRoom.${room.value?.ulid}`);
 const isPlaying = ref(false);
 const isSecondPlayerReady = ref(false);
 
+const winnerUserId = ref<string>();
+
 const initWebsocket = () => {
   const channel = getRoomChannel(channelId.value);
   currentRoom.setChannel(channel);
@@ -79,11 +81,13 @@ const initWebsocket = () => {
         return;
       }
 
+      winnerUserId.value = undefined;
       currentRoom.setSecondUser(user);
     })
     .leaving((user: LoggedInUser) => {
       console.log('user leave channel', user);
 
+      winnerUserId.value = undefined;
       currentRoom.refreshRoom().then((res) => {
         if (res) {
           return;
@@ -114,6 +118,7 @@ const initWebsocket = () => {
       console.log('game-finished');
 
       isPlaying.value = false;
+      winnerUserId.value = data.winner.ulid;
 
       showInfoAlert('Đã tìm ra người chiến thắng', 'Game đã kết thúc');
     })
@@ -151,23 +156,6 @@ onMounted(async () => {
   initWebsocket();
 });
 
-const leaveRoom = async () => {
-  if (!confirm('Bạn có chắc bạn muốn rời khỏi phòng chơi này chứ?')) {
-    return;
-  }
-
-  const res = await getOutOfRoomByIdApi(room.value!.ulid);
-  if (res === 'UNKNOWN') {
-    return showUnexpectedError();
-  }
-
-  echo.value.leave(channelId.value);
-
-  showInfoAlert('Đã rời khỏi phòng thành công', 'Rời khỏi phòng');
-
-  return router.replace({ name: 'rooms' });
-};
-
 const markReadyToPlay = async () => {
   if (!isSecondPlayerReady.value) {
     const res = await markAsReadyForRoomByIdApi(room.value!.ulid);
@@ -187,6 +175,8 @@ const markReadyToPlay = async () => {
   isSecondPlayerReady.value = false;
   return;
 };
+
+const leaveChannel = () => echo.value.leave(channelId.value);
 
 const startTheGame = async () => {
   if (!isSecondPlayerReady.value) {
