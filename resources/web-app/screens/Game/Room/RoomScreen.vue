@@ -18,6 +18,7 @@
           @start="startTheGame"
           @ready="markReadyToPlay"
         />
+        <WinnerAlert v-if="winnerUserId" />
         <CaroPlayground
           v-if="roomChannel"
           :disabled="!isPlaying"
@@ -51,6 +52,7 @@ import { markAsUnReadyForRoomByIdApi } from '@/datasources/api/rooms/markAsUnRea
 import LeaveRoomButton from '@/screens/Game/Room/components/LeaveRoomButton.vue';
 import { startGameApi } from '@/datasources/api/rooms/startGame.api';
 import { getRoomChannel } from '@/datasources/websocket/roomGameChannel';
+import WinnerAlert from '@/screens/Game/Room/components/WinnerAlert.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -99,15 +101,15 @@ const initWebsocket = () => {
 
   channel
     .listen('SecondPlayerReady', () => {
-      console.log('ready');
+      console.log('SecondPlayerReady');
       isSecondPlayerReady.value = true;
     })
     .listen('SecondPlayerUnready', () => {
-      console.log('unready');
+      console.log('SecondPlayerUnready');
       isSecondPlayerReady.value = false;
     })
     .listen('NewGameStarted', () => {
-      console.log('new-game-start');
+      console.log('NewGameStarted');
 
       isPlaying.value = true;
       winnerUserId.value = undefined;
@@ -115,7 +117,7 @@ const initWebsocket = () => {
       showInfoAlert('Trò chơi bắt đầu!!', 'Chơi thôi');
     })
     .listen('GameFinished', (data) => {
-      console.log('game-finished');
+      console.log('GameFinished');
 
       isPlaying.value = false;
       winnerUserId.value = data.winner.ulid;
