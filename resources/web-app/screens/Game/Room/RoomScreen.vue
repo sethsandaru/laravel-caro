@@ -18,7 +18,10 @@
           @start="startTheGame"
           @ready="markReadyToPlay"
         />
-        <CaroPlayground :disabled="!isPlaying" />
+        <CaroPlayground
+          v-if="roomChannel"
+          :disabled="!isPlaying"
+        />
       </div>
     </div>
   </div>
@@ -42,27 +45,28 @@ import CaroPlayground from '@/screens/Game/Room/components/CaroPlayground.vue';
 import Echo from 'laravel-echo';
 import { LoggedInUser } from '@/datasources/api/auth/getLoggedInUser.api';
 import { getEchoInstance } from '@/datasources/websocket/echo';
-import { XCircleIcon } from '@heroicons/vue/24/solid';
 import { getOutOfRoomByIdApi } from '@/datasources/api/rooms/getOutOfRoomById.api';
 import { markAsReadyForRoomByIdApi } from '@/datasources/api/rooms/markAsReadyForRoomById.api';
 import { markAsUnReadyForRoomByIdApi } from '@/datasources/api/rooms/markAsUnReadyForRoomById.api';
 import LeaveRoomButton from '@/screens/Game/Room/components/LeaveRoomButton.vue';
+import { startGameApi } from '@/datasources/api/rooms/startGame.api';
+import { getRoomChannel } from '@/datasources/websocket/roomGameChannel';
 
 const route = useRoute();
 const router = useRouter();
 
 const currentRoom = currentRoomStore();
-const { room } = storeToRefs(currentRoom);
+const { room, roomChannel } = storeToRefs(currentRoom);
 
 const echo = ref<Echo>(getEchoInstance());
 
 const channelId = computed(() => `playRoom.${room.value?.ulid}`);
 
-const isPlaying = ref(true);
+const isPlaying = ref(false);
 const isSecondPlayerReady = ref(false);
 
 const initWebsocket = () => {
-  const channel = echo.value.join(channelId.value);
+  const channel = getRoomChannel(channelId.value);
   currentRoom.setChannel(channel);
 
   channel
@@ -87,7 +91,9 @@ const initWebsocket = () => {
 
         router.replace({ name: 'rooms' });
       });
-    })
+    });
+
+  channel
     .listen('SecondPlayerReady', () => {
       console.log('ready');
       isSecondPlayerReady.value = true;
@@ -96,9 +102,11 @@ const initWebsocket = () => {
       console.log('unready');
       isSecondPlayerReady.value = false;
     })
-    .listen('NewGameStarted', () => {
+    .listen('NewGameStarted', (e) => {
       console.log('new-game-start');
       isPlaying.value = true;
+
+      showInfoAlert('Trò chơi bắt đầu!!', 'Chơi thôi');
     })
     .error((error: unknown) => {
       console.error(error);
@@ -177,6 +185,11 @@ const startTheGame = async () => {
       'Người chơi thứ 2 chưa sẵn sàng',
       'Chưa đủ điều kiện chơi'
     );
+  }
+
+  const res = await startGameApi(room.value!.ulid).catch(() => null);
+  if (!res) {
+    return showUnexpectedError();
   }
 };
 </script>

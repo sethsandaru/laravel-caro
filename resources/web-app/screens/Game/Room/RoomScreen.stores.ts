@@ -6,17 +6,17 @@ import {
 } from '@/datasources/api/rooms/getRoomById.api';
 import { LoggedInUser } from '@/datasources/api/auth/getLoggedInUser.api';
 import { AxiosError } from 'axios';
-import { PresenceChannel } from 'laravel-echo';
+import { RoomGameChannel } from '@/datasources/websocket/roomGameChannel';
 
 export const currentRoomStore = defineStore('currentRoom', () => {
   const room = ref<DetailedRoom>();
-  const roomChannel = ref<PresenceChannel>();
+  const roomChannel = ref<RoomGameChannel>();
 
   const setRoom = (wantedRoom: DetailedRoom) => {
     room.value = { ...wantedRoom };
   };
 
-  const setChannel = (channel: PresenceChannel) => {
+  const setChannel = (channel: RoomGameChannel) => {
     roomChannel.value = channel;
   };
 

@@ -1,4 +1,4 @@
-import Echo from 'laravel-echo';
+import Echo, { PresenceChannel } from 'laravel-echo';
 
 let echoInstance: Echo | undefined;
 
@@ -19,3 +19,16 @@ export const getEchoInstance = (): Echo => {
 
   return echoInstance;
 };
+
+type BaseEvent = {
+  type: string;
+  payload: unknown;
+};
+
+export interface StrictPresenceChannel<Event extends BaseEvent>
+  extends PresenceChannel {
+  listen<EventType extends Event['type']>(
+    event: EventType,
+    callback: (data: Extract<Event, { type: EventType }>['payload']) => void
+  ): this;
+}

@@ -31,5 +31,6 @@ Route::middleware('auth:api')
         Route::patch('/rooms/{room}/unready', [RoomController::class, 'markAsUnReadyToPlay']);
 
         Route::post('/rooms/{room}/start-new-game', [RoomGameController::class, 'startNewGame']);
+        Route::post('/rooms/{room}/games/{roomGame}/move', [RoomGameController::class, 'setMove']);
     });
 

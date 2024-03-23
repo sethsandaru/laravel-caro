@@ -62,42 +62,74 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref, toRef } from 'vue';
+import { currentRoomStore } from '@/screens/Game/Room/RoomScreen.stores';
+import { storeToRefs } from 'pinia';
+import { getDefaultBoard } from '@/screens/Game/Room/components/CaroPlayground.methods';
+import { useUserStore } from '@/stores/user.store';
+import { setMoveInBoardApi } from '@/datasources/api/rooms/setMoveInBoard.api';
+import { showUnexpectedError } from '@/utils/toast';
 
 type Props = {
   disabled?: boolean;
 };
 
-defineProps<Props>();
+const props = defineProps<Props>();
+const disabled = toRef(props, 'disabled');
 
+const currentRoom = currentRoomStore();
+const { room, roomChannel } = storeToRefs(currentRoom);
+
+const currentUser = useUserStore();
+const { user } = storeToRefs(currentUser);
+
+const currentGameId = ref<string>();
 const board = ref<number[][]>(getDefaultBoard());
 
-let turn = 1;
+const nextTurnUserId = ref<string>();
 
-const select = (rowIdx: number, colIdx: number) => {
+const select = async (rowIdx: number, colIdx: number) => {
+  if (
+    !board.value || // board does not exist
+    disabled.value || // board is disabled
+    user.value.ulid !== nextTurnUserId.value // not the turn for this user
+  ) {
+    return;
+  }
+
   if (board.value[rowIdx][colIdx] !== 0) {
     return;
   }
 
-  board.value[rowIdx][colIdx] = turn;
+  board.value[rowIdx][colIdx] =
+    room.value?.createdByUser.ulid === nextTurnUserId.value ? 1 : 2;
 
-  if (turn === 1) {
-    turn++;
-  } else {
-    turn--;
-  }
+  await setMoveInBoardApi({
+    roomId: room.value!.ulid,
+    roomGameId: currentGameId.value!,
+    rowIndex: rowIdx,
+    colIndex: colIdx,
+  }).catch(() => {
+    board.value[rowIdx][colIdx] = 0;
+    showUnexpectedError();
+
+    return null;
+  });
 };
 
-function getDefaultBoard() {
-  const board: number[][] = [];
+const setBoard = (newBoard: number[][]) => {
+  board.value = newBoard;
+};
 
-  for (let i = 0; i < 20; i++) {
-    board[i] = [];
-    for (let j = 0; j < 20; j++) {
-      board[i][j] = 0;
-    }
-  }
-
-  return board;
-}
+onMounted(() => {
+  roomChannel.value
+    ?.listen('NewGameStarted', (data) => {
+      currentGameId.value = data.roomGame.ulid;
+      setBoard(data.roomGame.games);
+    })
+    .listen('NextTurnAvailable', (data) => {
+      setBoard(data.roomGame.games);
+      nextTurnUserId.value = data.user.ulid;
+    });
+});
 </script>
