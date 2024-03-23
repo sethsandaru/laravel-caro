@@ -6,18 +6,10 @@
           <h1 class="text-xl font-semibold leading-6 text-gray-900">
             Phòng: {{ room?.title ?? 'Đang tải dữ liệu' }}
           </h1>
-
-          <button
-            type="button"
-            class="relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-            @click="leaveRoom"
-          >
-            <XCircleIcon
-              class="-ml-0.5 mr-1.5 h-5 w-5 text-gray-400"
-              aria-hidden="true"
-            />
-            <span>Rời phòng</span>
-          </button>
+          <LeaveRoomButton
+            :playing="isPlaying"
+            @leave="leaveRoom"
+          />
         </div>
 
         <RoomHeader
@@ -54,18 +46,19 @@ import { XCircleIcon } from '@heroicons/vue/24/solid';
 import { getOutOfRoomByIdApi } from '@/datasources/api/rooms/getOutOfRoomById.api';
 import { markAsReadyForRoomByIdApi } from '@/datasources/api/rooms/markAsReadyForRoomById.api';
 import { markAsUnReadyForRoomByIdApi } from '@/datasources/api/rooms/markAsUnReadyForRoomById.api';
+import LeaveRoomButton from '@/screens/Game/Room/components/LeaveRoomButton.vue';
 
 const route = useRoute();
 const router = useRouter();
 
 const currentRoom = currentRoomStore();
-const { room, roomChannel } = storeToRefs(currentRoom);
+const { room } = storeToRefs(currentRoom);
 
 const echo = ref<Echo>(getEchoInstance());
 
 const channelId = computed(() => `playRoom.${room.value?.ulid}`);
 
-const isPlaying = ref(false);
+const isPlaying = ref(true);
 const isSecondPlayerReady = ref(false);
 
 const initWebsocket = () => {
@@ -103,6 +96,10 @@ const initWebsocket = () => {
       console.log('unready');
       isSecondPlayerReady.value = false;
     })
+    // .listen('NewGameStarted', () => {
+    //   console.log('new-game-start');
+    //   isPlaying.value = true;
+    // })
     .error((error: unknown) => {
       console.error(error);
     });

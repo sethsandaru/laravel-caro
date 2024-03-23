@@ -22,6 +22,6 @@ class DefaultGameBoardData
             $board[] = $rows;
         }
 
-        return $board
+        return $board;
     }
 }

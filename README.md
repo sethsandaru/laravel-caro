@@ -36,6 +36,9 @@ Với việc ra mắt Laravel Reverb khi Laravel 11 ra mắt, việc implement r
 - Lịch sử thi đấu
 - Lịch sử từng nước đi
 
+## Improvement có thể thêm
+- Tạo ra các reusable components (button, avatar,...)
+
 ## Learning notes
 
 TBD
