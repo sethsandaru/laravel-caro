@@ -24,6 +24,18 @@ class RoomGame extends Model
         'winner_user_id',
     ];
 
+    protected $hidden = [
+        'id',
+        'room_id',
+        'first_player_user_id',
+        'second_player_user_id',
+        'first_turn_user_id',
+        'next_turn_user_id',
+        'winner_user_id',
+        'created_at',
+        'updated_at',
+    ];
+
     protected $casts = [
         'room_id' => 'int',
         'first_player_user_id' => 'int',

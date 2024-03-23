@@ -141,17 +141,21 @@ const setBoard = (newBoard: number[][]) => {
 onMounted(() => {
   roomChannel.value
     ?.listen('NewGameStarted', (data) => {
-      currentGameId.value = data.roomGame.ulid;
       setBoard(data.roomGame.games);
+
+      currentGameId.value = data.roomGame.ulid;
     })
     .listen('NextTurnAvailable', (data) => {
-      nextTurnUserId.value = data.user.ulid;
-
+      console.log('NextTurnAvailable');
       setBoard(data.roomGame.games);
+
+      nextTurnUserId.value = data.user.ulid;
     })
     .listen('GameFinished', (data) => {
-      nextTurnUserId.value = undefined;
+      console.log('GameFinished');
       setBoard(data.roomGame.games);
+
+      nextTurnUserId.value = undefined;
     });
 });
 </script>

@@ -18,7 +18,10 @@
           @start="startTheGame"
           @ready="markReadyToPlay"
         />
-        <WinnerAlert v-if="winnerUserId" />
+        <WinnerAlert
+          v-if="winnerUserId"
+          :winner-user-id="winnerUserId"
+        />
         <CaroPlayground
           v-if="roomChannel"
           :disabled="!isPlaying"
@@ -30,7 +33,7 @@
 
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { getRoomByIdApi } from '@/datasources/api/rooms/getRoomById.api';
 import { AxiosError } from 'axios';
 import {
@@ -46,7 +49,6 @@ import CaroPlayground from '@/screens/Game/Room/components/CaroPlayground.vue';
 import Echo from 'laravel-echo';
 import { LoggedInUser } from '@/datasources/api/auth/getLoggedInUser.api';
 import { getEchoInstance } from '@/datasources/websocket/echo';
-import { getOutOfRoomByIdApi } from '@/datasources/api/rooms/getOutOfRoomById.api';
 import { markAsReadyForRoomByIdApi } from '@/datasources/api/rooms/markAsReadyForRoomById.api';
 import { markAsUnReadyForRoomByIdApi } from '@/datasources/api/rooms/markAsUnReadyForRoomById.api';
 import LeaveRoomButton from '@/screens/Game/Room/components/LeaveRoomButton.vue';
@@ -188,9 +190,8 @@ const startTheGame = async () => {
     );
   }
 
-  const res = await startGameApi(room.value!.ulid).catch(() => null);
-  if (!res) {
-    return showUnexpectedError();
-  }
+  await startGameApi(room.value!.ulid).catch(showUnexpectedError);
 };
+
+onUnmounted(leaveChannel);
 </script>
