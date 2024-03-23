@@ -43,11 +43,13 @@
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="w-8 h-8 text-blue-500"
-                  viewBox="0 0 24 24"
+                  viewBox="0 0 20 20"
                 >
                   <path
                     fill="currentColor"
-                    d="M12 20a8 8 0 0 1-8-8a8 8 0 0 1 8-8a8 8 0 0 1 8 8a8 8 0 0 1-8 8m0-18A10 10 0 0 0 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"
+                    fill-rule="evenodd"
+                    d="M10 2.5a7.5 7.5 0 1 0 0 15a7.5 7.5 0 0 0 0-15M.5 10a9.5 9.5 0 1 1 19 0a9.5 9.5 0 0 1-19 0"
+                    clip-rule="evenodd"
                   />
                 </svg>
               </span>
@@ -73,6 +75,10 @@ const board = ref<number[][]>(getDefaultBoard());
 let turn = 1;
 
 const select = (rowIdx: number, colIdx: number) => {
+  if (board.value[rowIdx][colIdx] !== 0) {
+    return;
+  }
+
   board.value[rowIdx][colIdx] = turn;
 
   if (turn === 1) {
