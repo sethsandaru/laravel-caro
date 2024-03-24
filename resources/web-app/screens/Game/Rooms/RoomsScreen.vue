@@ -73,18 +73,14 @@
                   class="relative whitespace-nowrap py-4 pl-3 pr-4 text-sm font-medium sm:pr-0"
                 >
                   <div class="flex justify-end">
-                    <button
+                    <JoinRoomButton
                       v-if="
                         user?.ulid !== room.createdByUser?.ulid &&
                         !room.secondUser &&
                         room.status === 'WAITING_FOR_ANOTHER_PLAYER'
                       "
-                      type="button"
-                      class="block rounded-md bg-pink-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-pink-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-600"
-                      @click="joinRoom(room)"
-                    >
-                      Gia nhập
-                    </button>
+                      @refresh-rooms="loadRooms"
+                    />
                     <button
                       v-if="
                         [
@@ -117,13 +113,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  showInfoAlert,
-  showUnexpectedError,
-  showWarningAlert,
-} from '@/utils/toast';
-import { createRoomApi } from '@/datasources/api/rooms/createRoom.api';
-import { useRouter } from 'vue-router';
+import { showUnexpectedError } from '@/utils/toast';
 import { onMounted, ref } from 'vue';
 import {
   getReadableRoomStatus,
@@ -132,10 +122,8 @@ import {
 } from '@/datasources/api/rooms/getRooms.api';
 import { useUserStore } from '@/stores/user.store';
 import { storeToRefs } from 'pinia';
-import { joinRoomByIdApi } from '@/datasources/api/rooms/joinRoomById.api';
 import CreateRoomButton from '@/screens/Game/Rooms/components/CreateRoomButton.vue';
-
-const router = useRouter();
+import JoinRoomButton from '@/screens/Game/Rooms/components/JoinRoomButton.vue';
 
 const currentUser = useUserStore();
 const { user } = storeToRefs(currentUser);
@@ -149,33 +137,6 @@ const loadRooms = async () => {
   }
 
   rooms.value = [...res.rooms];
-};
-
-const joinRoom = async (room: Room) => {
-  const res = await joinRoomByIdApi(room.ulid);
-
-  if (res === 'ALREADY_HAVE_MEMBER_JOINED') {
-    showWarningAlert(
-      'Đã có người chơi khác tham gia phòng này, xin mời bạn hãy vào phòng khác.',
-      'Phòng đã đầy'
-    );
-
-    return loadRooms();
-  }
-
-  if (res === 'UNKNOWN') {
-    showUnexpectedError();
-
-    return;
-  }
-
-  showInfoAlert('Vào phòng thành công, đang chuyển hướng,...', 'Thành công');
-  router.push({
-    name: 'room',
-    params: {
-      id: room.ulid,
-    },
-  });
 };
 
 onMounted(loadRooms);
