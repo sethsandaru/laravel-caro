@@ -33,6 +33,8 @@ jobs:
                     php -v
                     composer install --no-interaction
                     cp .github/envs/.env.testing .env
+                    npm ci
+                    npm run build
                     php artisan key:generate
                     php artisan optimize
 
