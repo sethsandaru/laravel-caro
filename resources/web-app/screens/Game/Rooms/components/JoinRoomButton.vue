@@ -46,6 +46,10 @@ const joinRoom = async (room: Room) => {
     return emits('refreshRooms');
   }
 
+  if (res === 'ALREADY_IN_A_ROOM') {
+    return;
+  }
+
   if (res === 'UNKNOWN') {
     showUnexpectedError();
 

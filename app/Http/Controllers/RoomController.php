@@ -61,7 +61,10 @@ class RoomController extends Controller
         $currentRoom = $user->createdRoom ?? $user->joinedRoom;
         if ($currentRoom !== null) {
             return JsonResponseFactory::outcome('ALREADY_IN_A_ROOM', [
-                'roomId' => $currentRoom->ulid,
+                'room' => [
+                    'id' => $currentRoom->ulid,
+                    'name' => $currentRoom->title,
+                ]
             ])->badRequest();
         }
 
@@ -79,6 +82,16 @@ class RoomController extends Controller
     public function joinRoom(JoinRoomRequest $request, Room $room): JsonResponse
     {
         $user = $request->user();
+        $currentRoom = $user->createdRoom ?? $user->joinedRoom;
+        if ($currentRoom !== null) {
+            return JsonResponseFactory::outcome('ALREADY_IN_A_ROOM', [
+                'room' => [
+                    'id' => $currentRoom->ulid,
+                    'name' => $currentRoom->title,
+                ]
+            ])->badRequest();
+        }
+
         DB::transaction(function () use ($room, $user) {
             $room->lockForUpdate();
             $room->update([

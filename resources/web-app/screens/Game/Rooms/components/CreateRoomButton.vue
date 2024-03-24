@@ -10,12 +10,14 @@
 
 <script setup lang="ts">
 import {
+  showErrorAlert,
   showInfoAlert,
   showUnexpectedError,
   showWarningAlert,
 } from '@/utils/toast';
 import { createRoomApi } from '@/datasources/api/rooms/createRoom.api';
 import { useRouter } from 'vue-router';
+import { AxiosError } from 'axios';
 
 const router = useRouter();
 
@@ -25,9 +27,22 @@ const createRoom = async () => {
     return showWarningAlert('Tên phòng là bắt buộc', 'Lỗi tạo phòng');
   }
 
-  const createRes = await createRoomApi(roomName).catch(() => undefined);
+  const createRes = await createRoomApi(roomName).catch(
+    (err: AxiosError<Record<string, unknown>>) => {
+      if (err.response?.data?.outcome === 'ALREADY_IN_A_ROOM') {
+        const room = err.response?.data.room as { name: string };
+
+        showErrorAlert(
+          `Bạn đang ở trong phòng: "${room.name}". Hãy thoát khỏi phòng trước khi tạo phòng mới`,
+          'Đã có phòng riêng'
+        );
+      }
+
+      return undefined;
+    }
+  );
   if (!createRes) {
-    return showUnexpectedError();
+    return;
   }
 
   showInfoAlert(
