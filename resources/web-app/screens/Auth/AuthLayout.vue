@@ -18,6 +18,9 @@
         <router-view />
       </div>
     </div>
+    <Footer />
   </Teleport>
 </template>
-]
+<script setup lang="ts">
+import Footer from '@/screens/Common/Footer.vue';
+</script>

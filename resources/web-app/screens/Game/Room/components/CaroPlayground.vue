@@ -101,8 +101,8 @@ const nextTurnUserName = computed(() => {
   }
 
   return nextTurnUserId.value === room.value?.createdByUser.ulid
-    ? room.value?.createdByUser.name
-    : room.value?.secondUser?.name;
+    ? room.value?.createdByUser.name + ' (P1)'
+    : room.value?.secondUser?.name + ' (P2)';
 });
 
 const select = async (rowIdx: number, colIdx: number) => {

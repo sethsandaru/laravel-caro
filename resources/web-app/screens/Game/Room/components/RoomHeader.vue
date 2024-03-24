@@ -15,7 +15,7 @@
             </div>
             <div class="ml-4">
               <h3 class="text-base font-semibold leading-6 text-gray-900">
-                {{ room.createdByUser.name }}
+                {{ room.createdByUser.name }} (P1)
               </h3>
               <p class="text-sm text-gray-500">
                 <a href="#">Chủ phòng</a>
@@ -23,7 +23,7 @@
             </div>
           </div>
           <div class="flex justify-center items-center ml-10">
-            <span class="text-lg font-medium">VS</span>
+            <span class="text-lg font-bold">VS</span>
           </div>
           <div class="flex items-center ml-10">
             <div class="flex-shrink-0">
@@ -38,7 +38,7 @@
             </div>
             <div class="ml-4">
               <h3 class="text-base font-semibold leading-6 text-gray-900">
-                {{ room.secondUser?.name ?? 'Đang chờ gia nhập' }}
+                {{ room.secondUser?.name ?? 'Đang chờ gia nhập' }} (P2)
               </h3>
               <p
                 v-if="room.secondUser"

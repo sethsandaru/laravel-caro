@@ -167,6 +167,7 @@
         </main>
       </div>
     </div>
+    <Footer />
   </Teleport>
 </template>
 
@@ -185,6 +186,7 @@ import { useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/user.store';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
+import Footer from '@/screens/Common/Footer.vue';
 
 const route = useRoute();
 
