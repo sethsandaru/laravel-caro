@@ -180,7 +180,16 @@ const markReadyToPlay = async () => {
   return;
 };
 
-const leaveChannel = () => echo.value.leave(channelId.value);
+const leaveChannel = () => {
+  roomChannel.value?.stopListening('SecondPlayerReady');
+  roomChannel.value?.stopListening('SecondPlayerUnready');
+  roomChannel.value?.stopListening('NewGameStarted');
+  roomChannel.value?.stopListening('GameFinished');
+
+  echo.value.leave(channelId.value);
+
+  currentRoom.flushData();
+};
 
 const startTheGame = async () => {
   if (!isSecondPlayerReady.value) {

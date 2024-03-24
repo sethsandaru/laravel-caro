@@ -69,7 +69,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, toRef } from 'vue';
+import { computed, onMounted, onUnmounted, ref, toRef } from 'vue';
 import { currentRoomStore } from '@/screens/Game/Room/RoomScreen.stores';
 import { storeToRefs } from 'pinia';
 import { getDefaultBoard } from '@/screens/Game/Room/components/CaroPlayground.methods';
@@ -139,23 +139,34 @@ const setBoard = (newBoard: number[][]) => {
 };
 
 onMounted(() => {
-  roomChannel.value
-    ?.listen('NewGameStarted', (data) => {
-      setBoard(data.roomGame.games);
+  if (!roomChannel.value) {
+    return;
+  }
 
-      currentGameId.value = data.roomGame.ulid;
-    })
-    .listen('NextTurnAvailable', (data) => {
-      console.log('NextTurnAvailable');
-      setBoard(data.roomGame.games);
+  roomChannel.value.listen('NewGameStarted', (data) => {
+    setBoard(data.roomGame.games);
 
-      nextTurnUserId.value = data.user.ulid;
-    })
-    .listen('GameFinished', (data) => {
-      console.log('GameFinished');
-      setBoard(data.roomGame.games);
+    currentGameId.value = data.roomGame.ulid;
+  });
 
-      nextTurnUserId.value = undefined;
-    });
+  roomChannel.value.listen('NextTurnAvailable', (data) => {
+    console.log('NextTurnAvailable');
+    setBoard(data.roomGame.games);
+
+    nextTurnUserId.value = data.user.ulid;
+  });
+
+  roomChannel.value.listen('GameFinished', (data) => {
+    console.log('GameFinished');
+    setBoard(data.roomGame.games);
+
+    nextTurnUserId.value = undefined;
+  });
+});
+
+onUnmounted(() => {
+  roomChannel.value?.stopListening('NewGameStarted');
+  roomChannel.value?.stopListening('NextTurnAvailable');
+  roomChannel.value?.stopListening('GameFinished');
 });
 </script>

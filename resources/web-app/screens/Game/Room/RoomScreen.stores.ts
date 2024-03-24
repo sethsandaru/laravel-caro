@@ -59,6 +59,11 @@ export const currentRoomStore = defineStore('currentRoom', () => {
     return true;
   };
 
+  const flushData = () => {
+    room.value = undefined;
+    roomChannel.value = undefined;
+  };
+
   return {
     room,
     roomChannel,
@@ -67,5 +72,6 @@ export const currentRoomStore = defineStore('currentRoom', () => {
     setSecondUser,
     refreshRoom,
     setChannel,
+    flushData,
   };
 });

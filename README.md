@@ -32,9 +32,12 @@ Với việc ra mắt Laravel Reverb khi Laravel 11 ra mắt, việc implement r
 ## Features có thể làm
 
 - Chatbox giữa 2 người chơi
+- Chặn 2 đầu thì ko dc thắng
+- Kick người chơi
 - Bảng xếp hạng (ngày, tuần, tháng, năm)
 - Lịch sử thi đấu
 - Lịch sử từng nước đi
+- Timelimit (nếu sau x seconds mà ko đi thì mặc định thua)
 
 ## Improvement có thể thêm
 - Tạo ra các reusable components (button, avatar,...)

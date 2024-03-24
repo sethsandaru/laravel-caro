@@ -31,6 +31,8 @@ class StartGameService
             'status' => Room::ROOM_STATUS_PLAYING,
         ]);
 
+        $roomGame->fresh();
+
         broadcast(new NewGameStarted($this->room, $roomGame));
         broadcast(new NextTurnAvailable($this->room, $roomGame, $roomGame->nextTurnUser));
 
