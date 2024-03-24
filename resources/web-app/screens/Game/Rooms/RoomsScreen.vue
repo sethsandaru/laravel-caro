@@ -10,13 +10,7 @@
         </p>
       </div>
       <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-        <button
-          @click="createRoom"
-          type="button"
-          class="block rounded-md bg-pink-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-pink-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-600"
-        >
-          Tạo phòng mới
-        </button>
+        <CreateRoomButton />
       </div>
     </div>
     <div class="mt-8 flow-root">
@@ -52,6 +46,14 @@
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
+              <tr v-if="rooms.length === 0">
+                <td
+                  colspan="4"
+                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-center"
+                >
+                  Chưa có phòng chơi nào!
+                </td>
+              </tr>
               <tr
                 v-for="room in rooms"
                 :key="room.ulid"
@@ -131,6 +133,7 @@ import {
 import { useUserStore } from '@/stores/user.store';
 import { storeToRefs } from 'pinia';
 import { joinRoomByIdApi } from '@/datasources/api/rooms/joinRoomById.api';
+import CreateRoomButton from '@/screens/Game/Rooms/components/CreateRoomButton.vue';
 
 const router = useRouter();
 
@@ -146,30 +149,6 @@ const loadRooms = async () => {
   }
 
   rooms.value = [...res.rooms];
-};
-
-const createRoom = async () => {
-  const roomName = prompt('Hãy điền tên phòng');
-  if (!roomName) {
-    return showWarningAlert('Tên phòng là bắt buộc', 'Lỗi tạo phòng');
-  }
-
-  const createRes = await createRoomApi(roomName).catch(() => undefined);
-  if (!createRes) {
-    return showUnexpectedError();
-  }
-
-  showInfoAlert(
-    'Tạo phòng thành công, chuyển hướng bạn đến phòng...',
-    'Thành công'
-  );
-
-  router.push({
-    name: 'room',
-    params: {
-      id: createRes,
-    },
-  });
 };
 
 const joinRoom = async (room: Room) => {
