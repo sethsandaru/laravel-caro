@@ -6,6 +6,7 @@ use App\Events\NewGameStarted;
 use App\Events\NextTurnAvailable;
 use App\Models\Room;
 use App\Models\RoomGame;
+use Illuminate\Support\Facades\Event;
 
 class StartGameService
 {
@@ -33,8 +34,8 @@ class StartGameService
 
         $roomGame->fresh();
 
-        broadcast(new NewGameStarted($this->room, $roomGame));
-        broadcast(new NextTurnAvailable($this->room, $roomGame, $roomGame->nextTurnUser));
+        Event::dispatch(new NewGameStarted($this->room, $roomGame));
+        Event::dispatch(new NextTurnAvailable($this->room, $roomGame, $roomGame->nextTurnUser));
 
         return $roomGame;
     }

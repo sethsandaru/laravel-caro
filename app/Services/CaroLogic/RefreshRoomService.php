@@ -4,6 +4,7 @@ namespace App\Services\CaroLogic;
 
 use App\Events\SecondPlayerUnready;
 use App\Models\Room;
+use Illuminate\Support\Facades\Event;
 
 class RefreshRoomService
 {
@@ -26,7 +27,7 @@ class RefreshRoomService
             'total_played' => $this->room->games()->count(),
         ])->save();
 
-        broadcast(new SecondPlayerUnready(
+        Event::dispatch(new SecondPlayerUnready(
             $this->room
         ));
     }

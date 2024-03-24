@@ -5,6 +5,7 @@ namespace App\Services\CaroLogic;
 use App\Events\GameFinished;
 use App\Events\NextTurnAvailable;
 use App\Models\RoomGame;
+use Illuminate\Support\Facades\Event;
 
 class SetMoveService
 {
@@ -62,12 +63,12 @@ class SetMoveService
 
         // continue the game
         if ($winnerNumber === 0) {
-            broadcast(new NextTurnAvailable($room, $this->roomGame, $this->roomGame->nextTurnUser));
+            Event::dispatch(new NextTurnAvailable($room, $this->roomGame, $this->roomGame->nextTurnUser));
             return;
         }
 
         // finishing the game
-        broadcast(new GameFinished(
+        Event::dispatch(new GameFinished(
             $room,
             $this->roomGame,
             $this->roomGame->winnerUser

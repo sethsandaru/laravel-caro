@@ -128,7 +128,7 @@ class RoomController extends Controller
             ]);
         });
 
-        broadcast(new SecondPlayerReady($room));
+        Event::dispatch(new SecondPlayerReady($room));
 
         return JsonResponseFactory::successOutcome([
             'roomId' => $room->ulid,
@@ -144,7 +144,7 @@ class RoomController extends Controller
             ]);
         });
 
-        broadcast(new SecondPlayerUnready($room));
+        Event::dispatch(new SecondPlayerUnready($room));
 
         return JsonResponseFactory::successOutcome([
             'roomId' => $room->ulid,
