@@ -79,6 +79,14 @@ Thay vì sử dụng Socialite của Laravel, mình viết 1 cái service đơn 
 
 Về cơ bản thì nó đơn giản, 2 APIs call và hết. Không cần phải cài thêm package cho mệt.
 
+### Auth Token stored in HTTP Cookie
+
+Đúng vậy, khi ta stores Auth Token ở HTTP Cookie, có thể ensure 100% là client không lấy + chỉnh sửa được.
+
+Điều này khiến app của bạn dc secured hơn, mấy cái browser's extensions cũng ko thể lấy dc token (nếu lưu trong localStorage thì có thể).
+
+Tất nhiên có trade-offs nhưng nó phù hợp ở application này.
+
 ## Lưu ý
 
 Đây là một sản phẩn Open Source để chia sẻ kiến thức theo MIT License.
