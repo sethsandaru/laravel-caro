@@ -1,0 +1,49 @@
+name: Build & Test Laravel Caro
+
+on:
+    pull_request:
+        branches:
+            - 'main'
+        types: [ opened, synchronize, reopened, ready_for_review ]
+    push:
+        branches:
+            - 'main'
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v3
+                if: success()
+
+            -   name: Setup PHP with coverage driver
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.2
+                    coverage: pcov
+
+            -   name: Start MySQL Database
+                run: |
+                  sudo service mysql start
+                  mysql -uroot -proot -e "CREATE DATABASE laravel_caro;"
+
+            -   name: Bootstrap project
+                if: success()
+                run: |
+                    php -v
+                    composer install --no-interaction
+                    cp .github/envs/.env.testing .env
+                    php artisan key:generate
+                    php artisan optimize
+
+            -   name: PHPUnit tests with coverage
+                if: success()
+                run: |
+                    php artisan test --coverage
+
+            -   name: upload coverage to codecov.io
+                if: success()
+                uses: codecov/codecov-action@v3
+                with:
+                    token: ${{ secrets.CODECOV_TOKEN }}
+                    file: ./coverage.xml
