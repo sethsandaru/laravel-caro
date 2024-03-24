@@ -79,6 +79,7 @@
                         !room.secondUser &&
                         room.status === 'WAITING_FOR_ANOTHER_PLAYER'
                       "
+                      :room="room"
                       @refresh-rooms="loadRooms"
                     />
                     <button
