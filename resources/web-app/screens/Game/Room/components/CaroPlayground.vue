@@ -75,7 +75,7 @@ import { storeToRefs } from 'pinia';
 import { getDefaultBoard } from '@/screens/Game/Room/components/CaroPlayground.methods';
 import { useUserStore } from '@/stores/user.store';
 import { setMoveInBoardApi } from '@/datasources/api/rooms/setMoveInBoard.api';
-import { showInfoAlert, showUnexpectedError } from '@/utils/toast';
+import { showUnexpectedError } from '@/utils/toast';
 
 type Props = {
   disabled?: boolean;
