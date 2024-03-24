@@ -46,6 +46,12 @@ const joinRoom = async (room: Room) => {
     return emits('refreshRooms');
   }
 
+  if (res === 'ROOM_NOT_FOUND') {
+    showWarningAlert('Phòng này không còn tồn tại', 'Lỗi');
+
+    return emits('refreshRooms');
+  }
+
   if (res === 'ALREADY_IN_A_ROOM') {
     return;
   }

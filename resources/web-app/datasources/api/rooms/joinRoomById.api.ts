@@ -13,6 +13,10 @@ export const joinRoomByIdApi = (id: string) =>
         return 'ALREADY_HAVE_MEMBER_JOINED';
       }
 
+      if (err.response?.status === 404) {
+        return 'ROOM_NOT_FOUND';
+      }
+
       if (err.response?.data?.outcome === 'ALREADY_IN_A_ROOM') {
         const room = err.response?.data.room as { name: string };
 
