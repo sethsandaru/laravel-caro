@@ -23,8 +23,8 @@ Với việc ra mắt Laravel Reverb khi Laravel 11 ra mắt, việc implement r
 - Laravel Reverb (WebSocket)
 - MySQL
 - Node 18+
-- Vue x TypeScript
-- TailwindCSS
+- Vue 3 x TypeScript
+- TailwindCSS FTW
 
 ## Cài đặt và chạy thử
 
@@ -64,6 +64,8 @@ Tests là phần không thể thiếu trong các backend apps hiện nay. Projec
 
 Project này bao gồm: Unit Tests và Feature Tests.
 
+**Note**: cái quan trọng nhất là Logic Caro, dc test covered 100% 😎
+
 ### Continuous Integration / CI
 
 Project này sử dụng GitHub Actions để chạy Continuous Integration (CI) process. Tham khảo thư mục `.github/workflows` để tìm hiểu thêm.
@@ -80,15 +82,17 @@ Workflow cơ bản:
 
 Thay vì sử dụng Socialite của Laravel, mình viết 1 cái service đơn giản để login với Google.
 
-Về cơ bản thì nó đơn giản, 2 APIs call và hết. Không cần phải cài thêm package cho mệt.
+Về cơ bản thì nó đơn giản, 2 external APIs call và hết. Không cần phải cài thêm package cho mệt.
 
-### Auth Token stored in HTTP Cookie
+### Auth Token stored in HTTPOnly Cookie
 
-Đúng vậy, khi ta stores Auth Token ở HTTP Cookie, có thể ensure 100% là client không lấy + chỉnh sửa được.
+Đúng vậy, khi ta stores Auth Token ở HTTPOnly Cookie, có thể ensure 100% là client không lấy + chỉnh sửa được.
 
-Điều này khiến app của bạn dc secured hơn, mấy cái browser's extensions cũng ko thể lấy dc token (nếu lưu trong localStorage thì có thể).
+Điều này khiến app của bạn dc secured hơn, mấy cái browser's extensions cũng ko thể lấy dc token 
 
-Tất nhiên có trade-offs nhưng nó phù hợp ở application này.
+- Nếu bạn lưu trong localStorage/sessionStorage thì có thể.
+
+Tất nhiên là cái gì cũng có trade-offs nhưng mình cảm thấy approach này phù hợp cho Laravel Caro app.
 
 ## Lưu ý
 
