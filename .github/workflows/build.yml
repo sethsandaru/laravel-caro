@@ -33,9 +33,11 @@ jobs:
                     php -v
                     composer install --no-interaction
                     cp .github/envs/.env.testing .env
+                    cp .github/envs/.env.testing .env.testing
                     npm ci
                     npm run build
                     php artisan key:generate
+                    php artisan key:generate --env=testing
                     php artisan optimize
 
             -   name: PHPUnit tests with coverage
