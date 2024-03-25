@@ -13,8 +13,10 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
-    public function signInUsingGoogle(SignInUsingGoogleRequest $request, GoogleOauthService $googleOauthService): JsonResponse
-    {
+    public function signInUsingGoogle(
+        SignInUsingGoogleRequest $request,
+        GoogleOauthService $googleOauthService
+    ): JsonResponse {
         $googleToken = $googleOauthService->getOauthToken(
             $request->validated('code')
         );
