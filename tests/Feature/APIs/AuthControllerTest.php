@@ -14,7 +14,7 @@ class AuthControllerTest extends TestCase
     {
         $this->postJson('/api/auth/google', [
             'code' => null,
-        ])->dd()->assertUnprocessable();
+        ])->assertUnprocessable();
     }
 
     public function testSignInWithGoogleReceives400InvalidToken()
