@@ -1,4 +1,7 @@
 # Laravel Caro x Seth Phat
+[![Build & Test Laravel Caro](https://github.com/sethsandaru/laravel-caro/actions/workflows/build.yml/badge.svg)](https://github.com/sethsandaru/laravel-caro/actions/workflows/build.yml)
+[![Laravel Caro Seth Phat Code Coverage from CodeCov](https://codecov.io/gh/sethsandaru/laravel-caro/graph/badge.svg?token=19V492OLJ7)](https://codecov.io/gh/sethsandaru/laravel-caro)
+
 
 <p align="center" width="100%">
     <img src="./resources/web-app/assets/logo.png" align="center" width="300">
