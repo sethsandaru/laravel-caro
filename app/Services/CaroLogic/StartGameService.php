@@ -28,9 +28,7 @@ class StartGameService
             ...$this->acquireFirstTurnPlayer(),
         ]);
 
-        $this->room->fill([
-            'status' => Room::ROOM_STATUS_PLAYING,
-        ]);
+        $this->room->markAsPlaying();
 
         $roomGame->fresh();
 

@@ -11,14 +11,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Room extends Model
 {
+    use HasFactory;
+    use UseUlidAsSecondaryIdentifier;
+    use SoftDeletes;
+
     public const ROOM_STATUS_WAITING_FOR_ANOTHER_PLAYER = 'WAITING_FOR_ANOTHER_PLAYER';
     public const ROOM_STATUS_WAITING_FOR_CONFIRMATION = 'WAITING_FOR_CONFIRMATION';
     public const ROOM_STATUS_READY_TO_PLAY = 'READY_TO_PLAY';
     public const ROOM_STATUS_PLAYING = 'PLAYING';
-
-    use HasFactory;
-    use UseUlidAsSecondaryIdentifier;
-    use SoftDeletes;
 
     protected $table = 'rooms';
 
@@ -57,5 +57,11 @@ class Room extends Model
     public function games(): HasMany
     {
         return $this->hasMany(RoomGame::class, 'room_id');
+    }
+
+    public function markAsPlaying(): void
+    {
+        $this->status = static::ROOM_STATUS_PLAYING;
+        $this->save();
     }
 }
