@@ -45,6 +45,13 @@ jobs:
                 run: |
                     php artisan test --coverage --coverage-clover coverage.xml
 
+            -   name: Upload artifacts
+                uses: actions/upload-artifact@v3
+                if: failure()
+                with:
+                     name: laravel.log
+                     path: storage/logs/laravel.log
+
             -   name: upload coverage to codecov.io
                 if: success()
                 uses: codecov/codecov-action@v4.0.1
