@@ -20,7 +20,6 @@ class RoomGameControllerTest extends TestCase
         $this->actingAs($room->secondUser);
 
         $this->postJson('/api/rooms/' . $room->ulid .'/start-new-game')
-            ->dump()
             ->assertForbidden();
     }
 
@@ -33,7 +32,6 @@ class RoomGameControllerTest extends TestCase
         $this->actingAs($room->createdByUser);
 
         $this->postJson('/api/rooms/' . $room->ulid .'/start-new-game')
-            ->dump()
             ->assertBadRequest()
             ->assertJsonFragment([
                 'outcome' => 'SECOND_PLAYER_IS_NOT_READY',
@@ -54,7 +52,6 @@ class RoomGameControllerTest extends TestCase
         $this->actingAs($room->createdByUser);
 
         $this->postJson('/api/rooms/' . $room->ulid .'/start-new-game')
-            ->dump()
             ->assertOk()
             ->assertJsonFragment([
                 'outcome' => 'SUCCESS',

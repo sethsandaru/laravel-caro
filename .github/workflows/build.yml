@@ -38,6 +38,7 @@ jobs:
                     npm run build
                     php artisan key:generate
                     php artisan key:generate --env=testing
+                    php artisan jwt:secret
                     php artisan optimize
 
             -   name: PHPUnit tests with coverage
