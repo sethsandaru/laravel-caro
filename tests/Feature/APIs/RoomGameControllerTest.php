@@ -77,7 +77,10 @@ class RoomGameControllerTest extends TestCase
         $room = Room::factory()->create([
             'status' => Room::ROOM_STATUS_PLAYING,
         ]);
-        $roomGame = RoomGame::factory()->setRoom($room)->create([
+        $roomGame = RoomGame::factory()->create([
+            'room_id' => $room->id,
+            'first_player_user_id' => $room->created_by_user_id,
+            'second_player_user_id' => $room->second_user_id,
             'next_turn_user_id' => $room->second_user_id,
         ]);
 
@@ -99,7 +102,10 @@ class RoomGameControllerTest extends TestCase
         $room = Room::factory()->create([
             'status' => Room::ROOM_STATUS_PLAYING,
         ]);
-        $roomGame = RoomGame::factory()->setRoom($room)->create([
+        $roomGame = RoomGame::factory()->create([
+            'room_id' => $room->id,
+            'first_player_user_id' => $room->created_by_user_id,
+            'second_player_user_id' => $room->second_user_id,
             'next_turn_user_id' => $room->second_user_id,
         ]);
 
