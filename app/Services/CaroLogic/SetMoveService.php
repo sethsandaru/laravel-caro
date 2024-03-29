@@ -5,11 +5,13 @@ namespace App\Services\CaroLogic;
 use App\Events\GameFinished;
 use App\Events\NextTurnAvailable;
 use App\Models\RoomGame;
+use App\Models\User;
 use Illuminate\Support\Facades\Event;
 
 class SetMoveService
 {
     protected RoomGame $roomGame;
+    protected User $user;
 
     public function __construct(
         private readonly CaroWinnerCalculator $caroWinnerCalculator,
@@ -24,8 +26,19 @@ class SetMoveService
         return $this;
     }
 
-    public function move(int $rowIdx, int $colIdx): void
+    public function setUser(User $user): self
     {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function move(int $rowIdx, int $colIdx): SetMoveResult
+    {
+        if ($this->roomGame->next_turn_user_id !== $this->user->id) {
+            return SetMoveResult::NOT_YOUR_TURN;
+        }
+
         $room = $this->roomGame->room;
 
         // pick code
@@ -35,6 +48,10 @@ class SetMoveService
 
         // board update
         $gameBoard = $this->roomGame->games;
+        if ($gameBoard[$rowIdx][$colIdx] !== 0) {
+            return SetMoveResult::CONFLICTED_MOVE;
+        }
+
         $gameBoard[$rowIdx][$colIdx] = $userCode;
 
         // here we need to calculate if this user win or not
@@ -64,7 +81,7 @@ class SetMoveService
         // continue the game
         if ($winnerNumber === 0) {
             Event::dispatch(new NextTurnAvailable($room, $this->roomGame, $this->roomGame->nextTurnUser));
-            return;
+            return SetMoveResult::SUCCESS;
         }
 
         // finishing the game
@@ -76,5 +93,7 @@ class SetMoveService
 
         $this->refreshRoomService->setRoom($room)
             ->refresh();
+
+        return SetMoveResult::SUCCESS;
     }
 }

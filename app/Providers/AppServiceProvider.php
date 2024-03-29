@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\Room;
+use App\Models\RoomGame;
+use App\Policies\RoomGamePolicy;
 use App\Policies\RoomPolicy;
 use App\Services\GoogleOauth\GoogleOauthService;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -32,5 +34,6 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Gate::policy(Room::class, RoomPolicy::class);
+        Gate::policy(RoomGame::class, RoomGamePolicy::class);
     }
 }

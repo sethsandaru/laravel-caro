@@ -40,8 +40,9 @@ class RoomTest extends TestCase
         $room = Room::factory()->create();
         $games = RoomGame::factory()
             ->count(3)
-            ->setRoom($room)
-            ->create();
+            ->create([
+                'room_id' => $room->id,
+            ]);
 
         $relatedGames = $room->games()->pluck('ulid');
 

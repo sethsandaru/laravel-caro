@@ -10,6 +10,7 @@ use App\Http\Request\RoomGame\StartNewGameRequest;
 use App\Models\Room;
 use App\Models\RoomGame;
 use App\Services\CaroLogic\DefaultGameBoardData;
+use App\Services\CaroLogic\SetMoveResult;
 use App\Services\CaroLogic\SetMoveService;
 use App\Services\CaroLogic\StartGameService;
 use Illuminate\Http\JsonResponse;
@@ -36,15 +37,16 @@ class RoomGameController extends Controller
         RoomGame $roomGame,
         SetMoveService $setMoveService
     ): JsonResponse {
-        if ($roomGame->next_turn_user_id !== $request->user()->id) {
-            return JsonResponseFactory::outcome('NOT_YOUR_TURN')->badRequest();
-        }
-
         $rowIdx = $request->validated('rowIndex');
         $colIdx = $request->validated('colIndex');
 
-        $setMoveService->setRoomGame($roomGame)
+        $result = $setMoveService->setRoomGame($roomGame)
+            ->setUser($request->user())
             ->move($rowIdx, $colIdx);
+
+        if ($result !== SetMoveResult::SUCCESS) {
+            return JsonResponseFactory::outcome($result->value)->badRequest();
+        }
 
         return JsonResponseFactory::successOutcome();
     }

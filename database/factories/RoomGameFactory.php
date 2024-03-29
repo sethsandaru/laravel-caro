@@ -11,18 +11,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class RoomGameFactory extends Factory
 {
-    protected Room $room;
-
-    public function setRoom(Room $room): self
-    {
-        $this->room = $room;
-
-        return $this;
-    }
-
     public function definition(): array
     {
-        $room = $this->room ?? Room::factory()->create();
+        $room = Room::factory()->create();
 
         return [
             'room_id' => $room->id,

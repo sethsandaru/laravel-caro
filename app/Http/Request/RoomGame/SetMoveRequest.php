@@ -11,8 +11,10 @@ class SetMoveRequest extends FormRequest
     {
         /** @var Room $room */
         $room = $this->route('room');
+        $roomGame = $this->route('roomGame');
 
-        return $this->user()->can('canView', $room);
+        return $this->user()->can('canView', $room)
+            && $this->user()->can('canView', $roomGame);
     }
 
     public function rules(): array
