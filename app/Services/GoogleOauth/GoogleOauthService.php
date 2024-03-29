@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Http;
 
 class GoogleOauthService
 {
+    public const GET_OAUTH_TOKEN_ENDPOINT = 'https://oauth2.googleapis.com/token';
+    public const GET_USER_INFO_ENDPOINT = 'https://www.googleapis.com/oauth2/v1/userinfo';
+
     public function __construct(
         protected string $googleClientId,
         protected string $googleClientSecret,
@@ -14,9 +17,7 @@ class GoogleOauthService
 
     public function getOauthToken(string $code): ?GoogleTokenResponse
     {
-        $url = 'https://oauth2.googleapis.com/token';
-
-        $response = Http::asForm()->post($url, [
+        $response = Http::asForm()->post(static::GET_OAUTH_TOKEN_ENDPOINT, [
             'code' => $code,
             'client_id' => $this->googleClientId,
             'client_secret' => $this->googleClientSecret,
@@ -36,11 +37,9 @@ class GoogleOauthService
 
     public function getUser(GoogleTokenResponse $token): ?GoogleUserResponse
     {
-        $url = 'https://www.googleapis.com/oauth2/v1/userinfo';
-
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $token->idToken,
-        ])->get($url, [
+        ])->get(static::GET_USER_INFO_ENDPOINT, [
             'alt' => 'json',
             'access_token' => $token->accessToken,
         ]);

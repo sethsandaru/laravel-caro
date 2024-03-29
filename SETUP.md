@@ -17,6 +17,8 @@ php artisan key:generate # first time only
 ```php
 APP_URL=http://localhost:8000 # quan trọng
 SESSION_DOMAIN=.localhost # quan trọng
+
+AUTH_GUARD=api
 ```
 
 ### Database ENVs

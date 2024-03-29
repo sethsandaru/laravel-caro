@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Room;
+use App\Services\CaroLogic\DefaultGameBoardData;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,15 +11,32 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class RoomGameFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    protected Room $room;
+
+    public function setRoom(Room $room): self
+    {
+        $this->room = $room;
+
+        return $this;
+    }
+
     public function definition(): array
     {
+        $room = $this->room ?? Room::factory()->create();
+
         return [
-            //
+            'room_id' => $room->id,
+            'first_player_user_id' => $room->created_by_user_id,
+            'second_player_user_id' => $room->second_user_id,
+            'first_turn_user_id' => fake()->randomElement([
+                $room->created_by_user_id,
+                $room->second_user_id,
+            ]),
+            'next_turn_user_id' => fake()->randomElement([
+                $room->created_by_user_id,
+                $room->second_user_id,
+            ]),
+            'games' => DefaultGameBoardData::get(),
         ];
     }
 }
