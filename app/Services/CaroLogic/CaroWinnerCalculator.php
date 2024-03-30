@@ -7,12 +7,9 @@ class CaroWinnerCalculator
     /**
      * @param int[][] $board The current game board
      *
-     * @return int
-     * - 0: no winner
-     * - 1: player 1
-     * - 2: player 2
+     * @return CaroPlayerIdentifier
      */
-    public function calculate(array $board): int
+    public function calculate(array $board): CaroPlayerIdentifier
     {
         $rows = count($board);
         $cols = count($board[0]);
@@ -21,17 +18,17 @@ class CaroWinnerCalculator
         for ($i = 0; $i < $rows; $i++) {
             // Check rows
             if ($this->isConsecutive($board[$i], 1)) {
-                return 1;
+                return CaroPlayerIdentifier::PLAYER_1;
             } elseif ($this->isConsecutive($board[$i], 2)) {
-                return 2;
+                return CaroPlayerIdentifier::PLAYER_2;
             }
 
             // Check columns
             $columnValues = array_column($board, $i);
             if ($this->isConsecutive($columnValues, 1)) {
-                return 1;
+                return CaroPlayerIdentifier::PLAYER_1;
             } elseif ($this->isConsecutive($columnValues, 2)) {
-                return 2;
+                return CaroPlayerIdentifier::PLAYER_2;
             }
 
             // Check diagonals
@@ -42,9 +39,9 @@ class CaroWinnerCalculator
                         $diagonalValues[] = $board[$i + $k][$j + $k];
                     }
                     if ($this->isConsecutive($diagonalValues, 1)) {
-                        return 1;
+                        return CaroPlayerIdentifier::PLAYER_1;
                     } elseif ($this->isConsecutive($diagonalValues, 2)) {
-                        return 2;
+                        return CaroPlayerIdentifier::PLAYER_2;
                     }
 
                     $diagonalValues = [];
@@ -52,15 +49,15 @@ class CaroWinnerCalculator
                         $diagonalValues[] = $board[$i + $k][$j + 4 - $k];
                     }
                     if ($this->isConsecutive($diagonalValues, 1)) {
-                        return 1;
+                        return CaroPlayerIdentifier::PLAYER_1;
                     } elseif ($this->isConsecutive($diagonalValues, 2)) {
-                        return 2;
+                        return CaroPlayerIdentifier::PLAYER_2;
                     }
                 }
             }
         }
 
-        return 0;
+        return CaroPlayerIdentifier::NO_ONE;
     }
 
     protected function isConsecutive(array $values, int $number): bool

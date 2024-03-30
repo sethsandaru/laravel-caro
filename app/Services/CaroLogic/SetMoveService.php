@@ -43,8 +43,8 @@ class SetMoveService
 
         // pick code
         $userCode = $this->roomGame->next_turn_user_id === $room->created_by_user_id
-            ? 1
-            : 2;
+            ? CaroPlayerIdentifier::PLAYER_1
+            : CaroPlayerIdentifier::PLAYER_2;
 
         // board update
         $gameBoard = $this->roomGame->games;
@@ -52,7 +52,7 @@ class SetMoveService
             return SetMoveResult::CONFLICTED_MOVE;
         }
 
-        $gameBoard[$rowIdx][$colIdx] = $userCode;
+        $gameBoard[$rowIdx][$colIdx] = $userCode->value;
 
         // here we need to calculate if this user win or not
         $winnerNumber = $this->caroWinnerCalculator->calculate($gameBoard);
@@ -65,10 +65,10 @@ class SetMoveService
         ];
 
         // data if we have a winner
-        if ($winnerNumber > 0) {
+        if ($winnerNumber !== CaroPlayerIdentifier::NO_ONE) {
             $updateValues = [
                 ...$updateValues,
-                'winner_user_id' => $winnerNumber === 1
+                'winner_user_id' => $winnerNumber === CaroPlayerIdentifier::PLAYER_1
                     ? $room->created_by_user_id
                     : $room->second_user_id,
                 'next_turn_user_id' => null,
@@ -79,7 +79,7 @@ class SetMoveService
         $this->roomGame->refresh();
 
         // continue the game
-        if ($winnerNumber === 0) {
+        if ($winnerNumber === CaroPlayerIdentifier::NO_ONE) {
             Event::dispatch(new NextTurnAvailable($room, $this->roomGame, $this->roomGame->nextTurnUser));
             return SetMoveResult::SUCCESS;
         }

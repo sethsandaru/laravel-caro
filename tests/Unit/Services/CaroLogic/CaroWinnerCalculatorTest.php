@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Services\CaroLogic;
 
+use App\Services\CaroLogic\CaroPlayerIdentifier;
 use App\Services\CaroLogic\CaroWinnerCalculator;
 use PHPUnit\Framework\TestCase;
 
@@ -33,7 +34,7 @@ class CaroWinnerCalculatorTest extends TestCase
 
         $winner = $this->caroWinnerCalculator->calculate($board);
 
-        $this->assertSame(0, $winner);
+        $this->assertSame(CaroPlayerIdentifier::NO_ONE, $winner);
     }
 
     public function testPlayer1WinsOnAStraightLine()
@@ -53,7 +54,7 @@ class CaroWinnerCalculatorTest extends TestCase
 
         $winner = $this->caroWinnerCalculator->calculate($board);
 
-        $this->assertSame(1, $winner);
+        $this->assertSame(CaroPlayerIdentifier::PLAYER_1, $winner);
     }
 
     public function testPlayer1WinsOnAStraightRowLine()
@@ -73,7 +74,7 @@ class CaroWinnerCalculatorTest extends TestCase
 
         $winner = $this->caroWinnerCalculator->calculate($board);
 
-        $this->assertSame(1, $winner);
+        $this->assertSame(CaroPlayerIdentifier::PLAYER_1, $winner);
     }
 
     public function testPlayer2WinsOnADiagonalsLineLeft()
@@ -93,7 +94,7 @@ class CaroWinnerCalculatorTest extends TestCase
 
         $winner = $this->caroWinnerCalculator->calculate($board);
 
-        $this->assertSame(2, $winner);
+        $this->assertSame(CaroPlayerIdentifier::PLAYER_2, $winner);
     }
 
     public function testPlayer2WinsOnADiagonalsLineRight()
@@ -113,6 +114,6 @@ class CaroWinnerCalculatorTest extends TestCase
 
         $winner = $this->caroWinnerCalculator->calculate($board);
 
-        $this->assertSame(2, $winner);
+        $this->assertSame(CaroPlayerIdentifier::PLAYER_2, $winner);
     }
 }
